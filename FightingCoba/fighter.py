@@ -1,4 +1,5 @@
 import pygame
+import math
 
 class Fighter():
   def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound):
@@ -8,7 +9,7 @@ class Fighter():
     self.offset = data[2]
     self.flip = flip
     self.animation_list = self.load_images(sprite_sheet, animation_steps)
-    self.action = 0#0:idle #1:run #2:jump #3:attack1 #4: attack2 #5:hit #6:death #7:mundur
+    self.action = 0 #0:idle #1:dead #2:hit #3:jump #4: run #5:crouch #6:attack1 #7:attack2
     self.frame_index = 0
     self.image = self.animation_list[self.action][self.frame_index]
     self.update_time = pygame.time.get_ticks()
@@ -17,8 +18,10 @@ class Fighter():
     self.running = False
     self.backUp = False
     self.jump = False
+    self.crouch = False
     self.attacking = False
     self.attack_type = 0
+    self.distance = 0
     self.attack_cooldown = 0
     self.attack_sound = sound
     self.hit = False
@@ -39,12 +42,13 @@ class Fighter():
 
 
   def move(self, screen_width, screen_height, surface, target, round_over):
-    SPEED = 8
+    SPEED = 5
     GRAVITY = 2
     dx = 0
     dy = 0
     self.running = False
     self.backUp = False
+    self.crouch = False
     self.attack_type = 0
 
     #get keypresses
@@ -52,37 +56,99 @@ class Fighter():
 
     #can only perform other actions if not currently attacking
     if self.attacking == False and self.alive == True and round_over == False:
+      distance = math.sqrt((self.rect.centerx - target.rect.centerx)**2 + (self.rect.centery - target.rect.centery)**2)
       #check player 1 controls
       if self.player == 1:
+        #crouch
+        if key[pygame.K_s] and self.crouch == False:
+            self.crouch = True
         #movement
         if self.flip == False:
-          if key[pygame.K_a]:
+          if key[pygame.K_a] and self.crouch == False:
             dx = -SPEED
             self.backUp = True
-          if key[pygame.K_d]:
+          if key[pygame.K_d] and self.crouch == False:
             dx = SPEED
             self.running = True
         else:
-          if key[pygame.K_a]:
+          if key[pygame.K_a] and self.crouch == False:
             dx = -SPEED
             self.running = True
-          if key[pygame.K_d]:
+          if key[pygame.K_d] and self.crouch == False:
             dx = SPEED
             self.backUp = True
         #jump
-        if key[pygame.K_w] and self.jump == False:
+        if key[pygame.K_w] and self.jump == False and self.crouch == False:
           self.vel_y = -30
           self.jump = True
-        #attack
-        if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == False:
+        #attack punch
+        if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == False and self.crouch == False:
+          self.attack(target, surface)
+          #determine which attack type was used
+          if distance < 150:
+            if key[pygame.K_r]:
+              self.attack_type = 14
+            if key[pygame.K_t]:
+              self.attack_type = 15
+          else :  
+            if key[pygame.K_r]:
+              self.attack_type = 1
+            if key[pygame.K_t]:
+              self.attack_type = 2
+        #attack while jumping
+        if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == True:
           self.attack(target, surface)
           #determine which attack type was used
           if key[pygame.K_r]:
-            self.attack_type = 1
+            self.attack_type = 9
           if key[pygame.K_t]:
-            self.attack_type = 2
-
-
+            self.attack_type = 10
+        #attack while crouching
+        if (key[pygame.K_r] or key[pygame.K_t]) and self.crouch == True:
+          self.attack(target, surface)
+          #determine which attack type was used
+          if key[pygame.K_r]:
+            self.attack_type = 5
+          if key[pygame.K_t]:
+            self.attack_type = 6    
+        # special attack
+        if key[pygame.K_c]:
+          self.attack(target, surface)
+          self.attack_type = 18
+        if key[pygame.K_v]:
+          self.attack(target, surface)
+          self.attack_type = 19
+        #attack kick
+        if (key[pygame.K_f] or key[pygame.K_g]) and self.jump == False and self.crouch == False:
+          self.attack(target, surface)
+          #determine which attack type was used
+          if distance < 150:
+            if key[pygame.K_f]:
+              self.attack_type = 16
+            if key[pygame.K_g]:
+              self.attack_type = 17
+          else : 
+            if key[pygame.K_f]:
+              self.attack_type = 3
+            if key[pygame.K_g]:
+              self.attack_type = 4
+          #attack while jumping
+        if (key[pygame.K_f] or key[pygame.K_g]) and self.jump == True:
+          self.attack(target, surface)
+          #determine which attack type was used
+          if key[pygame.K_f]:
+            self.attack_type = 11
+          if key[pygame.K_g]:
+            self.attack_type = 12
+        #attack while crouching
+        if (key[pygame.K_f] or key[pygame.K_g]) and self.crouch == True:
+          self.attack(target, surface)
+          #determine which attack type was used
+          if key[pygame.K_f]:
+            self.attack_type = 7
+          if key[pygame.K_g]:
+            self.attack_type = 8        
+    
       #check player 2 controls
       if self.player == 2:
         #movement
@@ -93,6 +159,8 @@ class Fighter():
           if key[pygame.K_RIGHT]:
             dx = SPEED
             self.backUp = True
+          if key[pygame.K_DOWN]:
+            self.crouch = True
         else:
           if key[pygame.K_LEFT]:
             dx = -SPEED
@@ -109,9 +177,9 @@ class Fighter():
           self.attack(target, surface)
           #determine which attack type was used
           if key[pygame.K_KP1]:
-            self.attack_type = 1
+            self.attack_type = 3
           if key[pygame.K_KP2]:
-            self.attack_type = 2
+            self.attack_type = 4
 
 
     #apply gravity
@@ -149,24 +217,60 @@ class Fighter():
     if self.health <= 0:
       self.health = 0
       self.alive = False
-      self.update_action(6)#6:death
+      self.update_action(1)#1:death
     elif self.hit == True:
-      self.update_action(5)#5:hit
+      self.update_action(2)#2:hit
     elif self.attacking == True:
       if self.attack_type == 1:
-        self.update_action(3)#3:attack1
+        self.update_action(6)#6:lp
       elif self.attack_type == 2:
-        self.update_action(4)#4:attack2
+        self.update_action(7)#7:hp
+      elif self.attack_type == 3:
+        self.update_action(8)#8:lk
+      elif self.attack_type == 4:
+        self.update_action(9)#9:hk
+      elif self.attack_type == 5:
+        self.update_action(14)#14:crouch lp
+      elif self.attack_type == 6:
+        self.update_action(15)#15:crouch hp
+      elif self.attack_type == 7:
+        self.update_action(16)#16:crouch lk
+      elif self.attack_type == 8:
+        self.update_action(17)#17:crouch hk
+      elif self.attack_type == 9:
+        self.update_action(18)#18:jump lp
+      elif self.attack_type == 10:
+        self.update_action(19)#19:jump hp
+      elif self.attack_type == 11:
+        self.update_action(20)#20:jump lk
+      elif self.attack_type == 12:
+        self.update_action(21)#21:jump hk
+      elif self.attack_type == 13:
+        self.update_action(22)#20:jump lk
+      elif self.attack_type == 14:
+        self.update_action(10)#10:close lp
+      elif self.attack_type == 15:
+        self.update_action(11)#11:close hp
+      elif self.attack_type == 16:
+        self.update_action(12)#12:close lk
+      elif self.attack_type == 17:
+        self.update_action(13)#13:close hk
+      elif self.attack_type == 18:
+        self.update_action(22)#22:special 1
+      elif self.attack_type == 19:
+        self.update_action(23)#23:special 2
     elif self.jump == True:
-      self.update_action(2)#2:jump
+      self.update_action(3)#3:jump
     elif self.running == True:
-      self.update_action(1)#1:run
+      self.update_action(4)#4:run
     elif self.backUp == True:
-      self.update_action(7)#1:backUp
+      self.update_action(26)#4:backUp
+    elif self.crouch == True:
+      self.update_action(5)#5:crouch
     else:
       self.update_action(0)#0:idle
 
-    animation_cooldown = 50
+    animation_cooldown = 5
     #update image
     self.image = self.animation_list[self.action][self.frame_index]
     #check if enough time has passed since the last update
@@ -181,11 +285,11 @@ class Fighter():
       else:
         self.frame_index = 0
         #check if an attack was executed
-        if self.action == 3 or self.action == 4:
+        if self.action == 6 or self.action == 7 or self.action == 8 or self.action == 9 or self.action == 10 or self.action == 11 or self.action == 12 or self.action == 13 or self.action == 14 or self.action == 15 or self.action == 16 or self.action == 17 or self.action == 18 or self.action == 19 or self.action == 20 or self.action == 21 or self.action == 22 or self.action == 23 or self.action == 27 or self.action == 28:
           self.attacking = False
           self.attack_cooldown = 20
         #check if damage was taken
-        if self.action == 5:
+        if self.action == 2:
           self.hit = False
           #if the player was in the middle of an attack, then the attack is stopped
           self.attacking = False
@@ -199,7 +303,6 @@ class Fighter():
       self.attack_sound.play()
       #rect attack range (PERLU DIGANTI!!!)
       attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 2 * self.rect.width, self.rect.height) 
-      
       # pygame.draw.rect(surface, (255,0,0, 128), attacking_rect)
       
       # Create a separate surface with the SRCALPHA flag for per-pixel alpha

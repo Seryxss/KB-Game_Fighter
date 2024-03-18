@@ -31,11 +31,11 @@ ROUND_OVER_COOLDOWN = 2000
 #define fighter variablesk
 WARRIOR_SIZE = 250
 WARRIOR_SCALE = 2
-WARRIOR_OFFSET = [110, 80]
+WARRIOR_OFFSET = [107, 110]
 WARRIOR_DATA = [WARRIOR_SIZE, WARRIOR_SCALE, WARRIOR_OFFSET]
 WARRIOR2_SIZE = 250
 WARRIOR2_SCALE = 2
-WARRIOR2_OFFSET = [110, 80]
+WARRIOR2_OFFSET = [113, 110]
 WARRIOR2_DATA = [WARRIOR2_SIZE, WARRIOR2_SCALE, WARRIOR2_OFFSET]
 
 #load music and sounds
@@ -51,16 +51,22 @@ magic_fx.set_volume(0.75)
 bg_image = pygame.image.load("assets/images/background/background.jpg").convert_alpha()
 
 #load spritesheets
-warrior_sheet = pygame.image.load("assets/images/warrior/Sprites/ryu.png").convert_alpha()
-warrior2_sheet = pygame.image.load("assets/images/warrior/Sprites/ryu.png").convert_alpha()
+# warrior_sheet = pygame.image.load("assets/images/warrior/Sprites/ryu.png").convert_alpha()
+# warrior2_sheet = pygame.image.load("assets/images/warrior/Sprites/ryu.png").convert_alpha()
+warrior_sheet = pygame.image.load("assets/images/warrior/Sprites/spriteRyuBiru.png").convert_alpha()
+warrior2_sheet = pygame.image.load("assets/images/warrior/Sprites/spriteRyuMerah.png").convert_alpha()
 # wizard_sheet = pygame.image.load("assets/images/wizard/Sprites/wizard.png").convert_alpha()
 
 #load vicory image
 victory_img = pygame.image.load("assets/images/icons/victory.png").convert_alpha()
 
 #define number of steps in each animation
-WARRIOR_ANIMATION_STEPS = [1,1,1,11,14,9,11,1]
-WARRIOR2_ANIMATION_STEPS = [1,1,1,11,14,9,13,1]
+# WARRIOR_ANIMATION_STEPS = [1,1,1,11,14,9,11,1]
+# WARRIOR2_ANIMATION_STEPS = [1,1,1,11,14,9,13,1]
+
+WARRIOR_ANIMATION_STEPS = [20,25,12,18,15,1,10,33,18,31,12,34,15,34,11,37,11,34,8,14,20,26,46,33,25,1,1,22,13]
+WARRIOR2_ANIMATION_STEPS = [20,25,12,18,15,1,10,33,18,31,12,34,15,34,11,37,11,34,8,14,20,26,46,33,25,1,1,22,13]
+
 
 #define font
 count_font = pygame.font.Font("assets/fonts/turok.ttf", 80)
