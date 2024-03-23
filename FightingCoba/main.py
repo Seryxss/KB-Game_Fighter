@@ -110,7 +110,7 @@ while run:
   draw_text("P2: " + str(score[1]), score_font, RED, 580, 60)
 
   #update countdown
-  if intro_count <= 0:
+  if intro_count <= 0:  
     #move fighters
     fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2, round_over)
     fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_1, round_over)
