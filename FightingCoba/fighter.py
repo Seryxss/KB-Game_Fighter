@@ -9,7 +9,7 @@ class Fighter():
     self.offset = data[2]
     self.flip = flip
     self.animation_list = self.load_images(sprite_sheet, animation_steps)
-    self.action = 0 #0:idle #1:dead #2:hit #3:jump #4: run #5:crouch #6:attack1 #7:attack2
+    self.action = 0 
     self.frame_index = 0
     self.image = self.animation_list[self.action][self.frame_index]
     self.update_time = pygame.time.get_ticks()
@@ -27,6 +27,12 @@ class Fighter():
     self.hit = False
     self.health = 100
     self.alive = True
+    self.hitBox = [
+      pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 2 * self.rect.width, self.rect.height), #lp
+      pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 0.75 * self.rect.width, 0.75 * self.rect.height) , #hp
+      pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 5 * self.rect.width, 5 * self.rect.height) 
+    ]
+    
 
 
   def load_images(self, sprite_sheet, animation_steps):
@@ -83,18 +89,30 @@ class Fighter():
           self.jump = True
         #attack punch
         if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == False and self.crouch == False:
-          self.attack(target, surface)
+          # self.attack(target, surface)
           #determine which attack type was used
-          if distance < 150:
+          if distance < 100:
             if key[pygame.K_r]:
-              self.attack_type = 14
+              self.attack_type = 13
+              self.attacking = True
+              self.attack(target, surface, self.attack_type)
             if key[pygame.K_t]:
-              self.attack_type = 15
+              self.attack_type = 14
+              self.attacking = True
+              self.attack(target, surface, self.attack_type)
           else :  
             if key[pygame.K_r]:
               self.attack_type = 1
+              self.attacking = True
+              self.attack(target, surface, self.attack_type)
+              # print(self.attack)
             if key[pygame.K_t]:
               self.attack_type = 2
+              self.attacking = True
+              self.attack(target, surface, self.attack_type)
+              # print(self.attack)
+          
+          # self.attack(target, surface)
         #attack while jumping
         if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == True:
           self.attack(target, surface)
@@ -114,19 +132,19 @@ class Fighter():
         # special attack
         if key[pygame.K_c]:
           self.attack(target, surface)
-          self.attack_type = 18
+          self.attack_type = 17
         if key[pygame.K_v]:
           self.attack(target, surface)
-          self.attack_type = 19
+          self.attack_type = 18
         #attack kick
         if (key[pygame.K_f] or key[pygame.K_g]) and self.jump == False and self.crouch == False:
           self.attack(target, surface)
           #determine which attack type was used
-          if distance < 150:
+          if distance < 100:
             if key[pygame.K_f]:
-              self.attack_type = 16
+              self.attack_type = 15
             if key[pygame.K_g]:
-              self.attack_type = 17
+              self.attack_type = 16
           else : 
             if key[pygame.K_f]:
               self.attack_type = 3
@@ -151,22 +169,23 @@ class Fighter():
     
       #check player 2 controls
       if self.player == 2:
+        distance = math.sqrt((self.rect.centerx - target.rect.centerx)**2 + (self.rect.centery - target.rect.centery)**2)
         #crouch
         if key[pygame.K_j] and self.crouch == False:
             self.crouch = True
         #movement
         if self.flip == True:
-          if key[pygame.K_h]:
+          if key[pygame.K_h] and self.crouch == False:
             dx = -SPEED
             self.running = True
-          if key[pygame.K_k]:
+          if key[pygame.K_k] and self.crouch == False:
             dx = SPEED
             self.backUp = True
         else:
-          if key[pygame.K_h]:
+          if key[pygame.K_h] and self.crouch == False:
             dx = -SPEED
             self.backUp = True
-          if key[pygame.K_k]:
+          if key[pygame.K_k] and self.crouch == False:
             dx = SPEED
             self.running = True
         #jump
@@ -184,11 +203,11 @@ class Fighter():
         if (key[pygame.K_o] or key[pygame.K_p]) and self.jump == False and self.crouch == False:
           self.attack(target, surface)
           #determine which attack type was used
-          if distance < 150:
+          if distance < 100:
             if key[pygame.K_o]:
-              self.attack_type = 14
+              self.attack_type = 13
             if key[pygame.K_p]:
-              self.attack_type = 15
+              self.attack_type = 14
           else :  
             if key[pygame.K_o]:
               self.attack_type = 1
@@ -213,19 +232,19 @@ class Fighter():
         # special attack
         if key[pygame.K_COMMA]:
           self.attack(target, surface)
-          self.attack_type = 18
+          self.attack_type = 17
         if key[pygame.K_PERIOD]:
           self.attack(target, surface)
-          self.attack_type = 19
+          self.attack_type = 18
         #attack kick
         if (key[pygame.K_l] or key[pygame.K_SEMICOLON]) and self.jump == False and self.crouch == False:
           self.attack(target, surface)
           #determine which attack type was used
-          if distance < 150:
+          if distance < 100:
             if key[pygame.K_l]:
-              self.attack_type = 16
+              self.attack_type = 15
             if key[pygame.K_SEMICOLON]:
-              self.attack_type = 17
+              self.attack_type = 16
           else : 
             if key[pygame.K_l]:
               self.attack_type = 3
@@ -353,30 +372,39 @@ class Fighter():
         #check if an attack was executed
         if self.action == 6 or self.action == 7 or self.action == 8 or self.action == 9 or self.action == 10 or self.action == 11 or self.action == 12 or self.action == 13 or self.action == 14 or self.action == 15 or self.action == 16 or self.action == 17 or self.action == 18 or self.action == 19 or self.action == 20 or self.action == 21 or self.action == 22 or self.action == 23 or self.action == 27 or self.action == 28:
           self.attacking = False
-          self.attack_cooldown = 20
+          self.attack_cooldown = 0
         #check if damage was taken
-        if self.action == 2:
+        else:
           self.hit = False
           #if the player was in the middle of an attack, then the attack is stopped
           self.attacking = False
-          self.attack_cooldown = 20
+          self.attack_cooldown = 0
 
 
-  def attack(self, target, surface):
+  def attack(self, target, surface, atk_type):
+    print("attack:  ", self.attack_type)
+    print("cooldown:  ", self.attack_cooldown)
     if self.attack_cooldown == 0:
       #execute attack
-      self.attacking = True
+      # self.attacking = True
       self.attack_sound.play()
       #rect attack range (PERLU DIGANTI!!!)
-      attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 2 * self.rect.width, self.rect.height) 
-      # pygame.draw.rect(surface, (255,0,0, 128), attacking_rect)
+      print(self.attack_type)
+      if atk_type == 1:
+        attacking_rect = self.hitBox[0]
+      elif atk_type == 2:
+        attacking_rect = self.hitBox[1]
+      else:
+        attacking_rect = self.hitBox[3]
       
-      # Create a separate surface with the SRCALPHA flag for per-pixel alpha
-      atk_surface = pygame.Surface((attacking_rect.width, attacking_rect.height), pygame.SRCALPHA)
-      # Draw the rectangle on the atk_surface with your desired color and alpha
-      pygame.draw.rect(atk_surface, (255, 0, 255, 180), atk_surface.get_rect())
-      # Blit the atk_surface onto your main surface at the position of attacking_rect
-      surface.blit(atk_surface, attacking_rect.topleft)
+      pygame.draw.rect(surface, (255,0,0, 128), attacking_rect)
+      
+      # # Create a separate surface with the SRCALPHA flag for per-pixel alpha
+      # atk_surface = pygame.Surface((attacking_rect.width, attacking_rect.height), pygame.SRCALPHA)
+      # # Draw the rectangle on the atk_surface with your desired color and alpha
+      # pygame.draw.rect(atk_surface, (255, 0, 255, 180), atk_surface.get_rect())
+      # # Blit the atk_surface onto your main surface at the position of attacking_rect
+      # surface.blit(atk_surface, attacking_rect.topleft)
 
       
       #check if the attacking player is the player to attack
