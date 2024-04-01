@@ -14,7 +14,7 @@ pygame.display.set_caption("Brawler")
 
 #set framerate
 clock = pygame.time.Clock()
-FPS = 60
+FPS = 30
 
 #define colours
 RED = (255, 0, 0)
