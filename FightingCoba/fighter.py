@@ -107,6 +107,7 @@ class Fighter():
               self.attack_type = 1
               self.attacking = True
               damage = 8
+              dx += SPEED
               self.attack(target, surface, self.attack_type, damage)
               # print(self.attack)
             if key[pygame.K_t]:
@@ -133,7 +134,7 @@ class Fighter():
             self.attack(target, surface, self.attack_type, damage)
         #attack while crouching
         if (key[pygame.K_r] or key[pygame.K_t]) and self.crouch == True:
-          self.attack(target, surface)
+          #self.attack(target, surface)
           #determine which attack type was used
           if key[pygame.K_r]:
             self.attack_type = 5
@@ -180,7 +181,7 @@ class Fighter():
               damage = 14
               self.attack(target, surface, self.attack_type, damage)
             if key[pygame.K_g]:
-              self.attack_type = 8
+              self.attack_type = 4
               self.attacking = True
               damage = 30
               self.attack(target, surface, self.attack_type, damage)
@@ -266,7 +267,7 @@ class Fighter():
               self.attack(target, surface, self.attack_type, damage)
         #attack while jumping
         if (key[pygame.K_o] or key[pygame.K_p]) and self.jump == True:
-          self.attack(target, surface)
+          #self.attack(target, surface)
           #determine which attack type was used
           if key[pygame.K_o]:
             self.attack_type = 9
@@ -280,7 +281,7 @@ class Fighter():
             self.attack(target, surface, self.attack_type, damage)
         #attack while crouching
         if (key[pygame.K_o] or key[pygame.K_p]) and self.crouch == True:
-          self.attack(target, surface)
+          #self.attack(target, surface)
           #determine which attack type was used
           if key[pygame.K_o]:
             self.attack_type = 5
@@ -307,7 +308,7 @@ class Fighter():
           self.attack(target, surface, self.attack_type, damage)
         #attack kick
         if (key[pygame.K_l] or key[pygame.K_SEMICOLON]) and self.jump == False and self.crouch == False:
-          self.attack(target, surface)
+          #self.attack(target, surface)
           #determine which attack type was used
           if distance < 100:
             if key[pygame.K_l]:
@@ -327,13 +328,13 @@ class Fighter():
               damage = 14
               self.attack(target, surface, self.attack_type, damage)
             if key[pygame.K_SEMICOLON]:
-              self.attack_type = 8
+              self.attack_type = 4
               self.attacking = True
               damage = 30
               self.attack(target, surface, self.attack_type, damage)
           #attack while jumping
         if (key[pygame.K_l] or key[pygame.K_SEMICOLON]) and self.jump == True:
-          self.attack(target, surface)
+          #self.attack(target, surface)
           #determine which attack type was used
           if key[pygame.K_l]:
             self.attack_type = 11
@@ -347,7 +348,7 @@ class Fighter():
             self.attack(target, surface, self.attack_type, damage)
         #attack while crouching
         if (key[pygame.K_l] or key[pygame.K_SEMICOLON]) and self.crouch == True:
-          self.attack(target, surface)
+          #self.attack(target, surface)
           #determine which attack type was used
           if key[pygame.K_l]:
             self.attack_type = 7
@@ -405,7 +406,7 @@ class Fighter():
         self.update_action(7)#7:hp
       elif self.attack_type == 3:
         self.update_action(8)#8:lk
-      elif self.attack_type == 8:
+      elif self.attack_type == 4:
         self.update_action(9)#9:hk
       elif self.attack_type == 5:
         self.update_action(14)#14:crouch lp
