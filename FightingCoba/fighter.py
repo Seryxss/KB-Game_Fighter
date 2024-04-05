@@ -27,12 +27,7 @@ class Fighter():
     self.hit = False
     self.health = 100
     self.alive = True
-    self.hitBox = [
-      pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 2 * self.rect.width, self.rect.height), #lp
-      pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 0.75 * self.rect.width, 0.75 * self.rect.height) , #hp
-      pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 5 * self.rect.width, 5 * self.rect.height) 
-    ]
-    
+    self.target = None
 
 
   def load_images(self, sprite_sheet, animation_steps):
@@ -48,6 +43,9 @@ class Fighter():
 
 
   def move(self, screen_width, screen_height, surface, target, round_over):
+    if self.target == None:
+      self.target = target
+
     SPEED = 5
     GRAVITY = 2
     dx = 0
@@ -396,6 +394,7 @@ class Fighter():
       self.health = 0
       self.alive = False
       self.update_action(1)#1:death
+      self.target.update_action(24) # victor
     elif self.hit == True:
       self.update_action(2)#2:hit
     elif self.attacking == True:
@@ -446,6 +445,10 @@ class Fighter():
     else:
       self.update_action(0)#0:idle
 
+    if(self.action != 0):
+      print("action:  ", self.action)
+      print("frame_index:  ", self.frame_index)
+
     animation_cooldown = 5
     #update image
     self.image = self.animation_list[self.action][self.frame_index]
@@ -483,11 +486,11 @@ class Fighter():
       #rect attack range (PERLU DIGANTI!!!)
       print(self.attack_type)
       if atk_type == 1:
-        attacking_rect = self.hitBox[0]
+        attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 2 * self.rect.width, self.rect.height) #lp 
       elif atk_type == 2:
-        attacking_rect = self.hitBox[1]
+        attacking_rect = pygame.Rect(self.rect.centerx - (0.75 * self.rect.width * self.flip), self.rect.y, 0.75 * self.rect.width, 0.75 * self.rect.height) #hp
       else:
-        attacking_rect = self.hitBox[2]
+        attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 5 * self.rect.width, 5 * self.rect.height) 
       
       pygame.draw.rect(surface, (255,0,0, 128), attacking_rect)
       
