@@ -25,11 +25,9 @@ class Fighter():
     self.attack_cooldown = 0
     self.attack_sound = sound
     self.hit = False
-    self.health = 100.0
+    self.health = 100
     self.alive = True
     self.target = None
-    self.surface = None
-    self.damage = 0
 
 
   def load_images(self, sprite_sheet, animation_steps):
@@ -45,9 +43,8 @@ class Fighter():
 
 
   def move(self, screen_width, screen_height, surface, target, round_over):
-    if self.target == None and self.surface == None:
+    if self.target == None:
       self.target = target
-      self.surface = surface
 
     SPEED = 5
     GRAVITY = 2
@@ -92,30 +89,30 @@ class Fighter():
         if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == False and self.crouch == False:
           # self.attack(target, surface)
           #determine which attack type was used
-          if distance < 90:
+          if distance < 100:
             if key[pygame.K_r]:
               self.attack_type = 13
               self.attacking = True
-              self.damage = 8
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 8
+              self.attack(target, surface, self.attack_type, damage)
             if key[pygame.K_t]:
               self.attack_type = 14
               self.attacking = True
-              self.damage = 28
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 28
+              self.attack(target, surface, self.attack_type, damage)
           else :  
             if key[pygame.K_r]:
               self.attack_type = 1
               self.attacking = True
-              self.damage = 8
+              damage = 8
               dx += SPEED
-              # self.attack(target, surface, self.attack_type, damage)
+              self.attack(target, surface, self.attack_type, damage)
               # print(self.attack)
             if key[pygame.K_t]:
               self.attack_type = 2
               self.attacking = True
-              self.damage = 28
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 28
+              self.attack(target, surface, self.attack_type, damage)
               # print(self.attack)
           
           # self.attack(target, surface)
@@ -126,13 +123,13 @@ class Fighter():
           if key[pygame.K_r]:
             self.attack_type = 9
             self.attacking = True
-            self.damage = 12
-            # self.attack(target, surface, self.attack_type, damage)
+            damage = 12
+            self.attack(target, surface, self.attack_type, damage)
           if key[pygame.K_t]:
             self.attack_type = 10
             self.attacking = True
-            self.damage = 26
-            # self.attack(target, surface, self.attack_type, damage)
+            damage = 26
+            self.attack(target, surface, self.attack_type, damage)
         #attack while crouching
         if (key[pygame.K_r] or key[pygame.K_t]) and self.crouch == True:
           #self.attack(target, surface)
@@ -140,52 +137,52 @@ class Fighter():
           if key[pygame.K_r]:
             self.attack_type = 5
             self.attacking = True
-            self.damage = 8
-            # self.attack(target, surface, self.attack_type, damage)
+            damage = 8
+            self.attack(target, surface, self.attack_type, damage)
           if key[pygame.K_t]:
             self.attack_type = 6  
             self.attacking = True
-            self.damage = 28
-            # self.attack(target, surface, self.attack_type, damage)  
+            damage = 28
+            self.attack(target, surface, self.attack_type, damage)  
         # special attack
         if key[pygame.K_c]:
           #self.attack(target, surface)
           self.attack_type = 17
           self.attacking = True
-          self.damage = 24
-          # self.attack(target, surface, self.attack_type, damage)
+          damage = 24
+          self.attack(target, surface, self.attack_type, damage)
         if key[pygame.K_v]:
           #self.attack(target, surface)
           self.attack_type = 18
           self.attacking = True
-          self.damage = 32
-          # self.attack(target, surface, self.attack_type, damage)
+          damage = 32
+          self.attack(target, surface, self.attack_type, damage)
         #attack kick
         if (key[pygame.K_f] or key[pygame.K_g]) and self.jump == False and self.crouch == False:
           #self.attack(target, surface)
           #determine which attack type was used
-          if distance < 90:
+          if distance < 100:
             if key[pygame.K_f]:
               self.attack_type = 15
               self.attacking = True
-              self.damage = 12
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 12
+              self.attack(target, surface, self.attack_type, damage)
             if key[pygame.K_g]:
               self.attack_type = 16
               self.attacking = True
-              self.damage = 28
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 28
+              self.attack(target, surface, self.attack_type, damage)
           else : 
             if key[pygame.K_f]:
               self.attack_type = 3
               self.attacking = True
-              self.damage = 14
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 14
+              self.attack(target, surface, self.attack_type, damage)
             if key[pygame.K_g]:
               self.attack_type = 4
               self.attacking = True
-              self.damage = 30
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 30
+              self.attack(target, surface, self.attack_type, damage)
           #attack while jumping
         if (key[pygame.K_f] or key[pygame.K_g]) and self.jump == True:
           #self.attack(target, surface)
@@ -193,13 +190,13 @@ class Fighter():
           if key[pygame.K_f]:
             self.attack_type = 11
             self.attacking = True
-            self.damage = 14
-            # self.attack(target, surface, self.attack_type, damage)
+            damage = 14
+            self.attack(target, surface, self.attack_type, damage)
           if key[pygame.K_g]:
             self.attack_type = 12
             self.attacking = True
-            self.damage = 30
-            # self.attack(target, surface, self.attack_type, damage)
+            damage = 30
+            self.attack(target, surface, self.attack_type, damage)
         #attack while crouching
         if (key[pygame.K_f] or key[pygame.K_g]) and self.crouch == True:
           #self.attack(target, surface)
@@ -207,13 +204,13 @@ class Fighter():
           if key[pygame.K_f]:
             self.attack_type = 7
             self.attacking = True
-            self.damage = 8
-            # self.attack(target, surface, self.attack_type, damage)
+            damage = 8
+            self.attack(target, surface, self.attack_type, damage)
           if key[pygame.K_g]:
             self.attack_type = 8  
             self.attacking = True  
-            self.damage = 26
-            # self.attack(target, surface, self.attack_type, damage)    
+            damage = 26
+            self.attack(target, surface, self.attack_type, damage)    
     
       #check player 2 controls
       if self.player == 2:
@@ -244,28 +241,28 @@ class Fighter():
         if (key[pygame.K_o] or key[pygame.K_p]) and self.jump == False and self.crouch == False:
           #self.attack(target, surface)
           #determine which attack type was used
-          if distance < 90:
+          if distance < 100:
             if key[pygame.K_o]:
               self.attack_type = 13
               self.attacking = True
-              self.damage = 8
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 8
+              self.attack(target, surface, self.attack_type, damage)
             if key[pygame.K_p]:
               self.attack_type = 14
               self.attacking = True
-              self.damage = 28
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 28
+              self.attack(target, surface, self.attack_type, damage)
           else :  
             if key[pygame.K_o]:
               self.attack_type = 1
               self.attacking = True
-              self.damage = 12
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 12
+              self.attack(target, surface, self.attack_type, damage)
             if key[pygame.K_p]:
               self.attack_type = 2
               self.attacking = True
-              self.damage = 28
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 28
+              self.attack(target, surface, self.attack_type, damage)
         #attack while jumping
         if (key[pygame.K_o] or key[pygame.K_p]) and self.jump == True:
           #self.attack(target, surface)
@@ -273,13 +270,13 @@ class Fighter():
           if key[pygame.K_o]:
             self.attack_type = 9
             self.attacking = True
-            self.damage = 12
-            # self.attack(target, surface, self.attack_type, damage)
+            damage = 12
+            self.attack(target, surface, self.attack_type, damage)
           if key[pygame.K_p]:
             self.attack_type = 10
             self.attacking = True
-            self.damage = 26
-            # self.attack(target, surface, self.attack_type, damage)
+            damage = 26
+            self.attack(target, surface, self.attack_type, damage)
         #attack while crouching
         if (key[pygame.K_o] or key[pygame.K_p]) and self.crouch == True:
           #self.attack(target, surface)
@@ -287,52 +284,52 @@ class Fighter():
           if key[pygame.K_o]:
             self.attack_type = 5
             self.attacking = True
-            self.damage = 8  
-            # self.attack(target, surface, self.attack_type, damage)
+            damage = 8  
+            self.attack(target, surface, self.attack_type, damage)
           if key[pygame.K_p]:
             self.attack_type = 6  
             self.attacking = True
-            self.damage = 28
-            # self.attack(target, surface, self.attack_type, damage)  
+            damage = 28
+            self.attack(target, surface, self.attack_type, damage)  
         # special attack
         if key[pygame.K_COMMA]:
           #self.attack(target, surface)
           self.attack_type = 17
           self.attacking = True
-          self.damage = 24
-          # self.attack(target, surface, self.attack_type, damage)
+          damage = 24
+          self.attack(target, surface, self.attack_type, damage)
         if key[pygame.K_PERIOD]:
           #self.attack(target, surface)
           self.attack_type = 18
           self.attacking = True
-          self.damage = 32
-          # self.attack(target, surface, self.attack_type, damage)
+          damage = 32
+          self.attack(target, surface, self.attack_type, damage)
         #attack kick
         if (key[pygame.K_l] or key[pygame.K_SEMICOLON]) and self.jump == False and self.crouch == False:
           #self.attack(target, surface)
           #determine which attack type was used
-          if distance < 90:
+          if distance < 100:
             if key[pygame.K_l]:
               self.attack_type = 15
               self.attacking = True
-              self.damage = 12
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 12
+              self.attack(target, surface, self.attack_type, damage)
             if key[pygame.K_SEMICOLON]:
               self.attack_type = 16
               self.attacking = True
-              self.damage = 28
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 28
+              self.attack(target, surface, self.attack_type, damage)
           else : 
             if key[pygame.K_l]:
               self.attack_type = 3
               self.attacking = True
-              self.damage = 14
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 14
+              self.attack(target, surface, self.attack_type, damage)
             if key[pygame.K_SEMICOLON]:
               self.attack_type = 4
               self.attacking = True
-              self.damage = 30
-              # self.attack(target, surface, self.attack_type, damage)
+              damage = 30
+              self.attack(target, surface, self.attack_type, damage)
           #attack while jumping
         if (key[pygame.K_l] or key[pygame.K_SEMICOLON]) and self.jump == True:
           #self.attack(target, surface)
@@ -340,13 +337,13 @@ class Fighter():
           if key[pygame.K_l]:
             self.attack_type = 11
             self.attacking = True
-            self.damage = 14
-            # self.attack(target, surface, self.attack_type, damage)
+            damage = 14
+            self.attack(target, surface, self.attack_type, damage)
           if key[pygame.K_SEMICOLON]:
             self.attack_type = 12
             self.attacking = True
-            self.damage = 30
-            # self.attack(target, surface, self.attack_type, damage)
+            damage = 30
+            self.attack(target, surface, self.attack_type, damage)
         #attack while crouching
         if (key[pygame.K_l] or key[pygame.K_SEMICOLON]) and self.crouch == True:
           #self.attack(target, surface)
@@ -354,13 +351,13 @@ class Fighter():
           if key[pygame.K_l]:
             self.attack_type = 7
             self.attacking = True
-            self.damage = 8
-            # self.attack(target, surface, self.attack_type, damage)
+            damage = 8
+            self.attack(target, surface, self.attack_type, damage)
           if key[pygame.K_SEMICOLON]:
             self.attack_type = 8
             self.attacking = True
-            self.damage = 26
-            # self.attack(target, surface, self.attack_type, damage)
+            damage = 26
+            self.attack(target, surface, self.attack_type, damage)
 
     #apply gravity
     self.vel_y += GRAVITY
@@ -450,49 +447,9 @@ class Fighter():
       self.update_action(0)#0:idle
 
     # if(self.action != 0):
-    #   print("damage: ", self.damage)
-      # print("action:  ", self.action)
-      # print("frame_index:  ", self.frame_index)
+    #   print("action:  ", self.action)
+    #   print("frame_index:  ", self.frame_index)
 
-    if (self.action == 6):
-      if(self.frame_index == 0 ):
-        self.attack_sound.play()
-      if(self.frame_index >= 2 and self.frame_index < 6):
-        attacking_rect = pygame.Rect(self.rect.centerx + 6.5 - (1.28 * self.rect.width * self.flip), self.rect.y+40, 1.28 * self.rect.width, self.rect.height*0.17)
-        self.attack(self.target, self.surface, self.damage, attacking_rect)
-    elif (self.action == 7):
-      if(self.frame_index == 0 ):
-        self.attack_sound.play()
-      if(self.frame_index >= 5 and self.frame_index < 11):
-        attacking_rect = pygame.Rect(self.rect.centerx + 6.5 - (2 * self.rect.width * self.flip), self.rect.y+32, 2 * self.rect.width, self.rect.height*0.17)
-        self.attack(self.target, self.surface, self.damage, attacking_rect)
-    elif (self.action == 8):
-      if(self.frame_index == 0 ):
-        self.attack_sound.play()
-      if(self.frame_index >= 6 and self.frame_index < 14):
-        attacking_rect = pygame.Rect(self.rect.centerx + 6.5 - (1.17 * self.rect.width * self.flip), self.rect.y+12, 1.17 * self.rect.width, self.rect.height*0.23)
-        self.attack(self.target, self.surface, self.damage, attacking_rect)
-    elif (self.action == 9):
-      if(self.frame_index == 0 ):
-        self.attack_sound.play()
-      if(self.frame_index >= 2 and self.frame_index < 6):
-        attacking_rect = pygame.Rect(self.rect.centerx + 6.5 - (1 * self.rect.width * self.flip), self.rect.y+12, 1 * self.rect.width, self.rect.height*0.3)
-        self.attack(self.target, self.surface, self.damage, attacking_rect)
-      if(self.frame_index >= 6 and self.frame_index < 14):
-        attacking_rect = pygame.Rect(self.rect.centerx + 6.5 - (1.45 * self.rect.width * self.flip), self.rect.y+15, 1.45 * self.rect.width, self.rect.height*0.2)
-        self.attack(self.target, self.surface, self.damage, attacking_rect)
-    elif (self.action == 10):
-      if(self.frame_index == 0 ):
-        self.attack_sound.play()
-      if(self.frame_index >= 3 and self.frame_index < 7):
-        attacking_rect = pygame.Rect(self.rect.centerx + 6.5 - (1.15 * self.rect.width * self.flip), self.rect.y+20, 1.15 * self.rect.width, self.rect.height*0.13)
-        self.attack(self.target, self.surface, self.damage, attacking_rect)
-    else:
-      self.damage = 0
-      # if(self.frame_index == 0 ):
-      #   self.attack_sound.play()
-
-  
     animation_cooldown = 5
     #update image
     self.image = self.animation_list[self.action][self.frame_index]
@@ -519,21 +476,40 @@ class Fighter():
           self.attack_cooldown = 0
 
 
-  def attack(self, target, surface, damage, attacking_rect):
+  def attack(self, target, surface, atk_type, damage):
     # print("attack:  ", self.attack_type)
     # print("cooldown:  ", self.attack_cooldown)
     # print("damage:  ", damage/4)
     if self.attack_cooldown == 0:
+      #execute attack
+      # self.attacking = True
+      self.attack_sound.play()
+      #rect attack range (PERLU DIGANTI!!!)
+      # print(self.attack_type)
+      if atk_type == 1:
+        attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 2 * self.rect.width, self.rect.height) #lp 
+      elif atk_type == 2:
+        attacking_rect = pygame.Rect(self.rect.centerx - (1.25 * self.rect.width * self.flip), self.rect.y, 1.25 * self.rect.width, 1.25 * self.rect.height) #hp
+      else:
+        attacking_rect = pygame.Rect(self.rect.centerx - (2 * self.rect.width * self.flip), self.rect.y, 5 * self.rect.width, 5 * self.rect.height) 
+      
       pygame.draw.rect(surface, (255,0,0, 128), attacking_rect)
+      
+      # # Create a separate surface with the SRCALPHA flag for per-pixel alpha
+      # atk_surface = pygame.Surface((attacking_rect.width, attacking_rect.height), pygame.SRCALPHA)
+      # # Draw the rectangle on the atk_surface with your desired color and alpha
+      # pygame.draw.rect(atk_surface, (255, 0, 255, 180), atk_surface.get_rect())
+      # # Blit the atk_surface onto your main surface at the position of attacking_rect
+      # surface.blit(atk_surface, attacking_rect.topleft)
 
+      
       #check if the attacking player is the player to attack
       if attacking_rect.colliderect(target.rect):
         target.hit = True
         if target.backUp or target.crouch:
-          target.health -= 0.70
+          target.health -= 1
         else:
-          target.health -= damage/80
-          # print("hit: ", target.health)
+          target.health -= damage/2
 
 
 
