@@ -22,7 +22,7 @@ YELLOW = (255, 255, 0)
 WHITE = (255, 255, 255)
 
 #define game variables
-intro_count = 1
+intro_count = 3
 last_count_update = pygame.time.get_ticks()
 score = [0, 0]#player scores. [P1, P2]
 round_over = False
@@ -31,11 +31,11 @@ ROUND_OVER_COOLDOWN = 2000
 #define fighter variablesk
 WARRIOR_SIZE = 250
 WARRIOR_SCALE = 2
-WARRIOR_OFFSET = [107, 110]
+WARRIOR_OFFSET = [110, 120]
 WARRIOR_DATA = [WARRIOR_SIZE, WARRIOR_SCALE, WARRIOR_OFFSET]
 WARRIOR2_SIZE = 250
 WARRIOR2_SCALE = 2
-WARRIOR2_OFFSET = [113, 110]
+WARRIOR2_OFFSET = [110, 120]
 WARRIOR2_DATA = [WARRIOR2_SIZE, WARRIOR2_SCALE, WARRIOR2_OFFSET]
 
 #load music and sounds
@@ -91,8 +91,8 @@ def draw_health_bar(health, x, y):
 
 
 #create two instances of fighters
-fighter_1 = Fighter(1, 200, 310, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)
-fighter_2 = Fighter(2, 700, 310, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx)
+fighter_1 = Fighter(1, 200, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)
+fighter_2 = Fighter(2, 700, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx)
 
 #game loop
 run = True
@@ -146,8 +146,8 @@ while run:
     if pygame.time.get_ticks() - round_over_time > ROUND_OVER_COOLDOWN:
       round_over = False
       intro_count = 3
-      fighter_1 = Fighter(1, 200, 310, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)
-      fighter_2 = Fighter(2, 700, 310, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx)
+      fighter_1 = Fighter(1, 200, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)
+      fighter_2 = Fighter(2, 700, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx)
 
   #event handler
   for event in pygame.event.get():

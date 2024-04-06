@@ -13,7 +13,7 @@ class Fighter():
     self.frame_index = 0
     self.image = self.animation_list[self.action][self.frame_index]
     self.update_time = pygame.time.get_ticks()
-    self.rect = pygame.Rect((x, y, 60, 180))
+    self.rect = pygame.Rect((x, y, 60, 160))
     self.vel_y = 0
     self.running = False
     self.backUp = False
@@ -30,7 +30,6 @@ class Fighter():
     self.target = None
     self.surface = None
     self.damage = 0
-
 
   def load_images(self, sprite_sheet, animation_steps):
     #extract images from spritesheet
@@ -92,7 +91,7 @@ class Fighter():
         if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == False and self.crouch == False:
           # self.attack(target, surface)
           #determine which attack type was used
-          if distance < 90:
+          if distance < 80:
             if key[pygame.K_r]:
               self.attack_type = 13
               self.attacking = True
@@ -108,7 +107,6 @@ class Fighter():
               self.attack_type = 1
               self.attacking = True
               self.damage = 8
-              dx += SPEED
               # self.attack(target, surface, self.attack_type, damage)
               # print(self.attack)
             if key[pygame.K_t]:
@@ -164,7 +162,7 @@ class Fighter():
         if (key[pygame.K_f] or key[pygame.K_g]) and self.jump == False and self.crouch == False:
           #self.attack(target, surface)
           #determine which attack type was used
-          if distance < 90:
+          if distance < 80:
             if key[pygame.K_f]:
               self.attack_type = 15
               self.attacking = True
@@ -244,7 +242,7 @@ class Fighter():
         if (key[pygame.K_o] or key[pygame.K_p]) and self.jump == False and self.crouch == False:
           #self.attack(target, surface)
           #determine which attack type was used
-          if distance < 90:
+          if distance < 80:
             if key[pygame.K_o]:
               self.attack_type = 13
               self.attacking = True
@@ -311,7 +309,7 @@ class Fighter():
         if (key[pygame.K_l] or key[pygame.K_SEMICOLON]) and self.jump == False and self.crouch == False:
           #self.attack(target, surface)
           #determine which attack type was used
-          if distance < 90:
+          if distance < 80:
             if key[pygame.K_l]:
               self.attack_type = 15
               self.attacking = True
@@ -454,44 +452,59 @@ class Fighter():
       # print("action:  ", self.action)
       # print("frame_index:  ", self.frame_index)
 
-    if (self.action == 6):
+    if (self.action == 6): ############################ lp
       if(self.frame_index == 0 ):
         self.attack_sound.play()
       if(self.frame_index >= 2 and self.frame_index < 6):
-        attacking_rect = pygame.Rect(self.rect.centerx + 6.5 - (1.28 * self.rect.width * self.flip), self.rect.y+40, 1.28 * self.rect.width, self.rect.height*0.17)
+        attacking_rect = pygame.Rect(self.rect.centerx - (1.23 * self.rect.width * self.flip), self.rect.y+20, 1.23 * self.rect.width, self.rect.height*0.17)
         self.attack(self.target, self.surface, self.damage, attacking_rect)
-    elif (self.action == 7):
+    elif (self.action == 7): ############################ hp
       if(self.frame_index == 0 ):
         self.attack_sound.play()
       if(self.frame_index >= 5 and self.frame_index < 11):
-        attacking_rect = pygame.Rect(self.rect.centerx + 6.5 - (2 * self.rect.width * self.flip), self.rect.y+32, 2 * self.rect.width, self.rect.height*0.17)
+        attacking_rect = pygame.Rect(self.rect.centerx - (1.85 * self.rect.width * self.flip), self.rect.y+12, 1.85 * self.rect.width, self.rect.height*0.17)
         self.attack(self.target, self.surface, self.damage, attacking_rect)
-    elif (self.action == 8):
+    elif (self.action == 8): ########################### lk
       if(self.frame_index == 0 ):
         self.attack_sound.play()
       if(self.frame_index >= 6 and self.frame_index < 14):
-        attacking_rect = pygame.Rect(self.rect.centerx + 6.5 - (1.17 * self.rect.width * self.flip), self.rect.y+12, 1.17 * self.rect.width, self.rect.height*0.23)
+        attacking_rect = pygame.Rect(self.rect.centerx - (1 * self.rect.width * self.flip), self.rect.y-8, 1 * self.rect.width, self.rect.height*0.23)
         self.attack(self.target, self.surface, self.damage, attacking_rect)
-    elif (self.action == 9):
+    elif (self.action == 9): ########################### hk
       if(self.frame_index == 0 ):
         self.attack_sound.play()
       if(self.frame_index >= 2 and self.frame_index < 6):
-        attacking_rect = pygame.Rect(self.rect.centerx + 6.5 - (1 * self.rect.width * self.flip), self.rect.y+12, 1 * self.rect.width, self.rect.height*0.3)
+        attacking_rect = pygame.Rect(self.rect.centerx - (1.1 * self.rect.width * self.flip), self.rect.y-8, 1.1 * self.rect.width, self.rect.height*0.3)
         self.attack(self.target, self.surface, self.damage, attacking_rect)
       if(self.frame_index >= 6 and self.frame_index < 14):
-        attacking_rect = pygame.Rect(self.rect.centerx + 6.5 - (1.45 * self.rect.width * self.flip), self.rect.y+15, 1.45 * self.rect.width, self.rect.height*0.2)
+        attacking_rect = pygame.Rect(self.rect.centerx - (1.6 * self.rect.width * self.flip), self.rect.y-5, 1.6 * self.rect.width, self.rect.height*0.2)
         self.attack(self.target, self.surface, self.damage, attacking_rect)
-    elif (self.action == 10):
+    elif (self.action == 10): ########################### close lp
       if(self.frame_index == 0 ):
         self.attack_sound.play()
       if(self.frame_index >= 3 and self.frame_index < 7):
-        attacking_rect = pygame.Rect(self.rect.centerx + 6.5 - (1.15 * self.rect.width * self.flip), self.rect.y+20, 1.15 * self.rect.width, self.rect.height*0.13)
+        attacking_rect = pygame.Rect(self.rect.centerx - (1.1 * self.rect.width * self.flip), self.rect.y, 1.1 * self.rect.width, self.rect.height*0.13)
         self.attack(self.target, self.surface, self.damage, attacking_rect)
+    elif (self.action == 11): ########################### close hp
+      if(self.frame_index == 0 ):
+        self.attack_sound.play()
+      if(self.frame_index >= 3 and self.frame_index < 6):
+        attacking_rect = pygame.Rect(self.rect.centerx - (0.8 * self.rect.width * self.flip), self.rect.y+30, 0.8 * self.rect.width, self.rect.height*0.22)
+        self.attack(self.target, self.surface, self.damage, attacking_rect)
+      if(self.frame_index >= 6 and self.frame_index < 13):
+        attacking_rect = pygame.Rect(self.rect.centerx - (1.6 * self.rect.width * self.flip), self.rect.y-30, 1.6 * self.rect.width, self.rect.height*0.42)
+        self.attack(self.target, self.surface, self.damage, attacking_rect)
+
+
     else:
       self.damage = 0
       # if(self.frame_index == 0 ):
       #   self.attack_sound.play()
 
+    # if (self.action == 5):
+    #   self.rect = pygame.Rect((self.rect.x, self.rect.y, 60, 20))
+    # else:
+    #   self.rect = pygame.Rect((self.rect.x, self.rect.y, 60, 180))
   
     animation_cooldown = 5
     #update image
