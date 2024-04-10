@@ -18,17 +18,17 @@ FPS = 60
 
 #define colours
 RED = (255, 0, 0)
-YELLOW = (255, 255, 0)
+YELLOW = (255, 255, 0)  
 WHITE = (255, 255, 255)
 
 #define game variables
-intro_count = 3
+intro_count = 2
 last_count_update = pygame.time.get_ticks()
 score = [0, 0]#player scores. [P1, P2]
 round_over = False
 ROUND_OVER_COOLDOWN = 2000
 
-#define fighter variablesk
+#define fighter variablesksssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 WARRIOR_SIZE = 250
 WARRIOR_SCALE = 2
 WARRIOR_OFFSET = [110, 120]
