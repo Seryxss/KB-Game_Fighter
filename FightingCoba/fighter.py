@@ -532,13 +532,36 @@ class Fighter():
       if(self.frame_index >= 2 and self.frame_index < 7):
         attacking_rect = pygame.Rect(self.rect.centerx - (2.2 * self.rect.width * self.flip), self.rect.y+80, 2.2 * self.rect.width, self.rect.height*0.29)
         self.attack(self.target, self.surface, self.damage, attacking_rect)
-    elif (self.action == 17): ########################### nunduk lk
+    elif (self.action == 17): ########################### nunduk hk
       if(self.frame_index == 0 ):
         self.attack_sound.play()
       if(self.frame_index >= 3 and self.frame_index < 10):
-        attacking_rect = pygame.Rect(self.rect.centerx - (1.9 * self.rect.width * self.flip), self.rect.y+80, 1.9 * self.rect.width, self.rect.height*0.29)
+        attacking_rect = pygame.Rect(self.rect.centerx - (2.3 * self.rect.width * self.flip), self.rect.y+80, 2.3 * self.rect.width, self.rect.height*0.29)
         self.attack(self.target, self.surface, self.damage, attacking_rect)
-
+    elif (self.action == 18): ########################### lompat lp
+      if(self.frame_index == 0 ):
+        self.attack_sound.play()
+      if(self.frame_index >= 2):
+        attacking_rect = pygame.Rect(self.rect.centerx - (1.4 * self.rect.width * self.flip), self.rect.y+20, 1 * self.rect.width, self.rect.height*0.4)
+        self.attack(self.target, self.surface, self.damage, attacking_rect)
+    elif (self.action == 19): ########################### lompat hp
+      if(self.frame_index == 0 ):
+        self.attack_sound.play()
+      if(self.frame_index >= 4 and self.frame_index < 12):
+        attacking_rect = pygame.Rect(self.rect.centerx - (1.8 * self.rect.width * self.flip), self.rect.y+50, 1.2 * self.rect.width, self.rect.height*0.12)
+        self.attack(self.target, self.surface, self.damage, attacking_rect)
+    elif (self.action == 20): ########################### lompat lk
+      if(self.frame_index == 0 ):
+        self.attack_sound.play()
+      if(self.frame_index >= 3):
+        attacking_rect = pygame.Rect(self.rect.centerx - (1.4 * self.rect.width * self.flip), self.rect.y+5, 1.3 * self.rect.width, self.rect.height*0.4)
+        self.attack(self.target, self.surface, self.damage, attacking_rect)
+    elif (self.action == 21): ########################### lompat hk
+      if(self.frame_index == 0 ):
+        self.attack_sound.play()
+      if(self.frame_index >= 5):
+        attacking_rect = pygame.Rect(self.rect.centerx - (1.4 * self.rect.width * self.flip), self.rect.y+5, 1.5 * self.rect.width, self.rect.height*0.4)
+        self.attack(self.target, self.surface, self.damage, attacking_rect)
 
     else:
       self.damage = 0
