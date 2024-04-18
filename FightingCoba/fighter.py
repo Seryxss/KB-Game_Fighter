@@ -66,7 +66,7 @@ class Fighter():
     if self.attacking == False and self.alive == True and round_over == False:
       distance = math.sqrt((self.rect.centerx - target.rect.centerx)**2 + (self.rect.centery - target.rect.centery)**2)
       #check player 1 controls
-      if self.player == 1:
+      if self.player == 1 and self.action != 2:
         #crouch
         if key[pygame.K_s] and self.crouch == False:
           self.crouch = True
@@ -216,7 +216,7 @@ class Fighter():
             # self.attack(target, surface, self.attack_type, damage)    
     
       #check player 2 controls
-      if self.player == 2:
+      if self.player == 2 and self.action != 2:
         distance = math.sqrt((self.rect.centerx - target.rect.centerx)**2 + (self.rect.centery - target.rect.centery)**2)
         #crouch
         if key[pygame.K_j] and self.crouch == False:
@@ -592,13 +592,13 @@ class Fighter():
         #check if an attack was executed
         if self.action == 6 or self.action == 7 or self.action == 8 or self.action == 9 or self.action == 10 or self.action == 11 or self.action == 12 or self.action == 13 or self.action == 14 or self.action == 15 or self.action == 16 or self.action == 17 or self.action == 18 or self.action == 19 or self.action == 20 or self.action == 21 or self.action == 22 or self.action == 23 or self.action == 27 or self.action == 28:
           self.attacking = False
-          self.attack_cooldown = 0
+          self.attack_cooldown = 1
         #check if damage was taken
         else:
           self.hit = False
           #if the player was in the middle of an attack, then the attack is stopped
           self.attacking = False
-          self.attack_cooldown = 0
+          self.attack_cooldown = 2
 
 
   def attack(self, target, surface, damage, attacking_rect):
