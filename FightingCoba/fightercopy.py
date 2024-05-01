@@ -25,7 +25,7 @@ class Fighter():
     self.attack_cooldown = 0
     self.attack_sound = sound
     self.hit = False
-    self.health = 100
+    self.health = 144
     self.alive = True
     self.target = None
 
