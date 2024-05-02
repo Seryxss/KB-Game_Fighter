@@ -671,7 +671,7 @@ class Fighter():
       # if(self.frame_index == 0 ):
       #   self.attack_sound.play()
 
-    if (self.action == 5 or self.action == 14 or self.action == 16 or self.action == 17): ########################### crouch
+    if (self.action == 5 or self.action == 26 or self.action == 14 or self.action == 16 or self.action == 17): ########################### crouch
       self.rect = pygame.Rect((self.rect.x, self.rect.y, 60, 100))
       self.offset = self.offsetCrouch
     else:
