@@ -398,8 +398,9 @@ class Fighter():
     self.rect.y += self.dy
 
 
-  #handle animation updates
+  #handle animation update
   def update(self):
+    print("Senpyukaku", self.senpyukaku_timer)
     #check what action the player is performing
     if self.health <= 0:
       self.health = 0
