@@ -35,7 +35,7 @@ class Fighter():
     self.damage = 0
     self.knockback = 3
     self.offsetStand = data[2]
-    self.offsetCrouch=[110,145]
+    self.offsetCrouch=[110,150]
 
   def load_images(self, sprite_sheet, animation_steps):
     #extract images from spritesheet
@@ -672,7 +672,7 @@ class Fighter():
       #   self.attack_sound.play()
 
     if (self.action == 5 or self.action == 14 or self.action == 16 or self.action == 17): ########################### crouch
-      self.rect = pygame.Rect((self.rect.x, self.rect.y, 60, 90))
+      self.rect = pygame.Rect((self.rect.x, self.rect.y, 60, 100))
       self.offset = self.offsetCrouch
     else:
       self.rect = pygame.Rect((self.rect.x, self.rect.y, 60, 160))
