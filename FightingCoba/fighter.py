@@ -393,6 +393,9 @@ class Fighter():
       self.jump = False
       self.dy = screen_height - 110 - self.rect.bottom
 
+    if self.crouch == True:
+      self.vel_y = 20
+
     #ensure players face each other
     if target.rect.centerx > self.rect.centerx:
       self.flip = False
