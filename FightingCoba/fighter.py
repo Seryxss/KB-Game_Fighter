@@ -127,13 +127,11 @@ class Fighter():
               
               # print(self.attack)
             if key[pygame.K_t]:
-
               self.attack_type = 2
               self.attacking = True
               self.damage = 28
               
               # print(self.attack)
-          
           
         #attack while jumping
         if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == True:
@@ -393,7 +391,12 @@ class Fighter():
       self.dy = screen_height - 110 - self.rect.bottom
 
     if self.crouch == True:
-      self.vel_y = 20
+      #self.vel_y = 500
+      #print(self.rect.y)
+      self.rect.y=390
+    # elif not self.jump:
+    #   self.rect.y=330
+
 
     #ensure players face each other
     if target.rect.centerx > self.rect.centerx:
@@ -505,6 +508,8 @@ class Fighter():
     elif self.crouch == True:
         self.update_action(5)#5:crouch
     else:
+      self.crouch == False
+      self.jump == False
       self.update_action(0)#0:idle
 
     # if(self.action != 0):
@@ -695,7 +700,7 @@ class Fighter():
         #check if an attack was executed
         if self.action == 6 or self.action == 7 or self.action == 8 or self.action == 9 or self.action == 10 or self.action == 11 or self.action == 12 or self.action == 13 or self.action == 14 or self.action == 15 or self.action == 16 or self.action == 17 or self.action == 18 or self.action == 19 or self.action == 20 or self.action == 21 or self.action == 22 or self.action == 23 or self.action == 27 or self.action == 28:
           self.attacking = False
-          self.attack_cooldown = 10
+          #self.attack_cooldown = 10
         #check if damage was taken
         else:
           self.hit = False
