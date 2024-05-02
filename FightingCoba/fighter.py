@@ -412,7 +412,7 @@ class Fighter():
     elif self.hit:
       self.hit = False
       self.dx = 0  
-    elif self.attacking == True:
+    elif self.attacking == True and self.attack_cooldown == 0:
       if self.attack_type == 1:
         self.update_action(6)#6:lp
       elif self.attack_type == 2:
@@ -614,7 +614,7 @@ class Fighter():
         self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=50, cooldownSelf=0)
       if(self.frame_index >= 17 and self.frame_index < 20):
         attacking_rect = pygame.Rect(self.rect.centerx - (-1.2 * self.rect.width * 2*(self.flip-0.5)) - (1.4 * self.flip*self.rect.width), self.rect.y-15, 1.4 * self.rect.width, self.rect.height*0.25)
-        self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=50, cooldownSelf=0)
+        self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=50, cooldownSelf=300)
     else:
       self.damage = 0
       # if(self.frame_index == 0 ):
@@ -668,7 +668,7 @@ class Fighter():
 
         if target.backUp or target.crouch:
           target.health -= 0.70
-          self.attack_cooldown = 20
+          self.attack_cooldown = 200
         else:
           target.health -= damage/80
           target.attack_cooldown = stunEnemy
