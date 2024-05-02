@@ -36,6 +36,7 @@ class Fighter():
     self.knockback = 3
     self.offsetStand = data[2]
     self.offsetCrouch=[110,150]
+    self.pauseHurtBox = 0
 
   def load_images(self, sprite_sheet, animation_steps):
     #extract images from spritesheet
@@ -521,7 +522,7 @@ class Fighter():
         self.attack_sound.play()
       if(self.frame_index >= 2 and self.frame_index < 6):
         attacking_rect = pygame.Rect(self.rect.centerx - (0.1 * self.rect.width * 2*(self.flip-0.5)) - (1 * self.flip*self.rect.width), self.rect.y+25, 1 * self.rect.width, self.rect.height*0.17)
-        self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=40, cooldownSelf=0)
+        self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=20, cooldownSelf=0)
     elif (self.action == 7): ############################ hp
       if(self.frame_index == 0 ):
         self.attack_sound.play()
@@ -704,6 +705,17 @@ class Fighter():
           #if the player was in the middle of an attack, then the attack is stopped
           self.attacking = False
           # self.attack_cooldown = 2
+    if (self.hit == True):
+      if self.pauseHurtBox == 0:
+        self.pauseHurtBox = 30
+    if self.pauseHurtBox > 0:
+      self.pauseHurtBox -= 1
+
+    if self.pauseHurtBox > 0:
+      self.rect = pygame.Rect(self.rect.x, 330, 0, 0)
+    # else:
+    #   self.rect = pygame.Rect(self.rect.x, self.rect.y, 60, 100)
+    
 
 
   def attack(self, target, surface, damage, attacking_rect, stunEnemy, cooldownSelf):
