@@ -3,6 +3,8 @@ import math
 
 class Fighter():
   def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound):
+    self.upward_force = 15
+    self.floating_duration = 40
     self.player = player
     self.size = data[0]
     self.image_scale = data[1]
@@ -226,10 +228,10 @@ class Fighter():
         #movement
         if self.flip == True:
           if key[pygame.K_h] and self.crouch == False:
-            self.dx = -self.SPEED
+            self.dx = self.SPEED
             self.running = True
           if key[pygame.K_k] and self.crouch == False:
-            self.dx = self.SPEED
+            self.dx = -self.SPEED
             self.backUp = True
         else:
           if key[pygame.K_h] and self.crouch == False:
@@ -576,6 +578,19 @@ class Fighter():
         self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=50, cooldownSelf=0)
     elif (self.action == 22): ########################### shoryuken
       if(self.frame_index == 0):
+        self.gravity = 0.2
+        if self.floating_duration > 0:
+            self.vel_y -= self.upward_force
+            self.floating_duration -= 1
+        else:
+            # Reset gravity and floating duration
+            self.gravity = 2  # Restore original gravity
+            self.floating_duration = 40  # Reset duration
+            # Set action to default or idle after completing the move
+            self.action = 0  # Or set to another default action
+
+        # Update position based on velocity
+        self.rect.y += self.vel_y
         # hilangin hitbox
         self.attack_sound.play()
       if(self.frame_index >= 4 and self.frame_index < 8):
