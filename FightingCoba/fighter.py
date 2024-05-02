@@ -33,7 +33,6 @@ class Fighter():
     self.surface = None
     self.damage = 0
     self.knockback = 5 
-    self.senpyukaku_timer = 0
     self.offsetStand = data[2]
     self.offsetCrouch=[110,145]
 
@@ -84,10 +83,10 @@ class Fighter():
             self.running = True
         else:
           if key[pygame.K_a] and self.crouch == False:
-            self.dx = -self.SPEED/2
+            self.dx = -self.SPEED
             self.running = True
           if key[pygame.K_d] and self.crouch == False:
-            self.dx = self.SPEED
+            self.dx = self.SPEED/2
             self.backUp = True
         #jump
         if key[pygame.K_w] and self.jump == False and self.crouch == False:
@@ -153,9 +152,8 @@ class Fighter():
             self.damage = 28
             # self.attack(target, surface, self.attack_type, damage)  
         # special attack
-        if key[pygame.K_c] and self.jump == False and self.crouch == False and self.senpyukaku_timer:
+        if key[pygame.K_c] and self.jump == False and self.crouch == False :
           #self.attack(target, surface)
-          self.senpyukaku_timer = 10
           self.attack_type = 17
           self.attacking = True
           self.damage = 24
@@ -301,9 +299,8 @@ class Fighter():
             self.damage = 28
             # self.attack(target, surface, self.attack_type, damage)  
         # special attack
-        if key[pygame.K_COMMA] and self.jump == False and self.crouch == False and self.senpyukaku_timer <= 0:
+        if key[pygame.K_COMMA] and self.jump == False and self.crouch == False:
           #self.attack(target, surface)
-          self.senpyukaku_timer = 10
           self.attack_type = 17
           self.attacking = True
           self.damage = 24
@@ -400,7 +397,6 @@ class Fighter():
 
   #handle animation update
   def update(self):
-    print("Senpyukaku", self.senpyukaku_timer)
     #check what action the player is performing
     if self.health <= 0:
       self.health = 0
@@ -587,11 +583,9 @@ class Fighter():
             self.vel_y -= self.upward_force
             self.floating_duration -= 1
         else:
-            # Reset gravity and floating duration
-            self.gravity = 2  # Restore original gravity
-            self.floating_duration = 40  # Reset duration
-            # Set action to default or idle after completing the move
-            self.action = 0  # Or set to another default action
+            self.gravity = 2
+            self.floating_duration = 40 
+            self.action = 0
 
         # Update position based on velocity
         self.rect.y += self.vel_y
@@ -610,8 +604,6 @@ class Fighter():
           self.rect.x += 5
       else:  # Facing left
           self.rect.x -= 5 
-          
-
       if(self.frame_index == 0):
         self.attack_sound.play()
       if(self.frame_index >= 11 and self.frame_index < 14):
