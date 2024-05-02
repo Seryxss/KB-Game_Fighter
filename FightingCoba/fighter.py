@@ -33,6 +33,7 @@ class Fighter():
     self.surface = None
     self.damage = 0
     self.knockback = 5 
+    self.senpyukaku_timer = 0
     self.offsetStand = data[2]
     self.offsetCrouch=[110,145]
 
@@ -152,8 +153,9 @@ class Fighter():
             self.damage = 28
             # self.attack(target, surface, self.attack_type, damage)  
         # special attack
-        if key[pygame.K_c] and self.jump == False and self.crouch == False:
+        if key[pygame.K_c] and self.jump == False and self.crouch == False and self.senpyukaku_timer:
           #self.attack(target, surface)
+          self.senpyukaku_timer = 10
           self.attack_type = 17
           self.attacking = True
           self.damage = 24
@@ -228,14 +230,14 @@ class Fighter():
         #movement
         if self.flip == True:
           if key[pygame.K_h] and self.crouch == False:
-            self.dx = self.SPEED
+            self.dx = -self.SPEED
             self.running = True
           if key[pygame.K_k] and self.crouch == False:
-            self.dx = -self.SPEED
+            self.dx = self.SPEED/2
             self.backUp = True
         else:
           if key[pygame.K_h] and self.crouch == False:
-            self.dx = -self.SPEED
+            self.dx = -self.SPEED/2
             self.backUp = True
           if key[pygame.K_k] and self.crouch == False:
             self.dx = self.SPEED
@@ -299,8 +301,9 @@ class Fighter():
             self.damage = 28
             # self.attack(target, surface, self.attack_type, damage)  
         # special attack
-        if key[pygame.K_COMMA] and self.jump == False and self.crouch == False:
+        if key[pygame.K_COMMA] and self.jump == False and self.crouch == False and self.senpyukaku_timer <= 0:
           #self.attack(target, surface)
+          self.senpyukaku_timer = 10
           self.attack_type = 17
           self.attacking = True
           self.damage = 24
@@ -606,6 +609,7 @@ class Fighter():
           self.rect.x += 5
       else:  # Facing left
           self.rect.x -= 5 
+          
 
       if(self.frame_index == 0):
         self.attack_sound.play()
