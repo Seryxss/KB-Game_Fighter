@@ -32,7 +32,7 @@ class Fighter():
     self.target = None
     self.surface = None
     self.damage = 0
-    self.knockback = 5 
+    self.knockback = 3
     self.offsetStand = data[2]
     self.offsetCrouch=[110,145]
 
@@ -404,7 +404,10 @@ class Fighter():
       self.update_action(1)#1:death
       self.target.update_action(24) # victor
     elif self.hit == True:
-      self.rect.x += self.dx
+      if self.player == 1:
+          self.rect.x -= self.knockback  # Knockback for Player 1
+      elif self.player == 2:
+          self.rect.x += self.knockback  # Knockback for Player 2
       self.update_action(2)#2:hit
     elif self.hit:
       self.hit = False
