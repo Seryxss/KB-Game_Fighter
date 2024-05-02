@@ -84,7 +84,7 @@ class Fighter():
       #check player 1 controls
       if self.player == 1 and self.action != 2:
         #crouch
-        if key[pygame.K_s] and self.crouch == False:
+        if key[pygame.K_s] and self.crouch == False and self.jump == False:
           self.crouch = True
         #movement
         if self.flip == False:
@@ -233,7 +233,7 @@ class Fighter():
       if self.player == 2 and self.action != 2:
         distance = math.sqrt((self.rect.centerx - target.rect.centerx)**2 + (self.rect.centery - target.rect.centery)**2)
         #crouch
-        if key[pygame.K_j] and self.crouch == False:
+        if key[pygame.K_j] and self.crouch == False and self.jump == False:
             self.crouch = True
         #movement
         if self.flip == True:
@@ -394,9 +394,6 @@ class Fighter():
       #self.vel_y = 500
       #print(self.rect.y)
       self.rect.y=390
-    # elif not self.jump:
-    #   self.rect.y=330
-
 
     #ensure players face each other
     if target.rect.centerx > self.rect.centerx:
@@ -508,9 +505,10 @@ class Fighter():
     elif self.crouch == True:
         self.update_action(5)#5:crouch
     else:
-      self.crouch == False
-      self.jump == False
+      self.crouch = False
+      self.jump = False
       self.update_action(0)#0:idle
+      self.rect.y=330
 
     # if(self.action != 0):
     #   print("damage: ", self.damage)
@@ -585,6 +583,7 @@ class Fighter():
         self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=40, cooldownSelf=0)
     elif (self.action == 15): ########################### nundk hp
       if(self.frame_index == 0 ):
+        self.rect.y = 330
         self.attack_sound.play()
       if(self.frame_index >= 3 and self.frame_index < 7):
         attacking_rect = pygame.Rect(self.rect.centerx - (0.1 * self.rect.width * 2*(self.flip-0.5)) - (1.2 * self.flip*self.rect.width), self.rect.y+5, 1.2 * self.rect.width, self.rect.height*0.36)
