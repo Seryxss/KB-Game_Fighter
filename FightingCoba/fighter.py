@@ -3,7 +3,7 @@ import math
 
 class Fighter():
   def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound):
-    self.upward_force = 15
+    self.upward_force = 30
     self.floating_duration = 40
     self.player = player
     self.size = data[0]
@@ -107,7 +107,6 @@ class Fighter():
           self.jump = True
         #attack punch
         if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == False and self.crouch == False:
-            
           #determine which attack type was used
           if distance < 80:
             if key[pygame.K_r]:
@@ -427,15 +426,36 @@ class Fighter():
     elif self.hit == True:
       if self.flip == True:
         if self.player == 1:
-            self.rect.x += self.knockback
+            if self.crouch == True:
+              print("hit crouch")
+              self.update_action(26)
+            elif self.backUp == True:
+              self.update_action(24)
+            else:
+              self.rect.x += self.knockback
+              self.update_action(2)#2:hit
         elif self.player == 2:
-            self.rect.x += self.knockback
+            if self.crouch == True:
+              print("hit crouch")
+              self.update_action(26)
+            elif self.backUp == True:
+              self.update_action(25)
+            else:
+              self.rect.x += self.knockback
+              self.update_action(2)#2:hit
       else:
         if self.player == 1:
-            self.rect.x -= self.knockback
+            if self.backUp == True:
+              self.update_action(25)
+            else:
+              self.rect.x -= self.knockback
+              self.update_action(2)#2:hit
         elif self.player == 2:
-            self.rect.x -= self.knockback
-      self.update_action(2)#2:hit
+            if self.backUp == True:
+              self.update_action(25)
+            else:
+              self.rect.x -= self.knockback
+              self.update_action(2)#2:hit
     elif self.hit:
       self.hit = False
       self.dx = 0  
@@ -481,9 +501,9 @@ class Fighter():
     elif self.running == True:
       self.update_action(4)#4:run
     elif self.backUp == True:
-      self.update_action(25)#4:backUp
+      self.update_action(4)#4:backUp
     elif self.crouch == True:
-      self.update_action(5)#5:crouch
+        self.update_action(5)#5:crouch
     else:
       self.update_action(0)#0:idle
 
@@ -598,7 +618,7 @@ class Fighter():
         attacking_rect = pygame.Rect(self.rect.centerx - (-0.8 * self.rect.width * 2*(self.flip-0.5)) - (1.7 * self.flip*self.rect.width), self.rect.y+5, 1.7 * self.rect.width, self.rect.height*0.4)
         self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=40, cooldownSelf=0)
     elif (self.action == 21): ########################### lompat hk
-      if(self.frame_index == 0 ):
+      if(self.frame_index == 0):
         self.attack_sound.play()
       if(self.frame_index >= 3 and self.frame_index < 8):
         attacking_rect = pygame.Rect(self.rect.centerx - (-0.5 * self.rect.width * 2*(self.flip-0.5)) - (1.2 * self.flip*self.rect.width), self.rect.y+5, 1.2 * self.rect.width, self.rect.height*0.4)
@@ -607,12 +627,12 @@ class Fighter():
         attacking_rect = pygame.Rect(self.rect.centerx - (-0.5 * self.rect.width * 2*(self.flip-0.5)) - (1.95 * self.flip*self.rect.width), self.rect.y+20, 1.95 * self.rect.width, self.rect.height*0.5)
         self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=60, cooldownSelf=0)
     elif (self.action == 22): ########################### shoryuken
-      if(self.frame_index == 0):
-        if not self.flip:  # Facing right
+      if(self.frame_index == 5):
+        if not self.flip:
           self.rect.x += 5
-        else:  # Facing left
+        else: 
           self.rect.x -= 5 
-        self.gravity = 0.4
+        self.gravity = 0.2
         if self.floating_duration > 0:
             self.vel_y -= self.upward_force
             self.floating_duration -= 1
@@ -652,7 +672,7 @@ class Fighter():
       #   self.attack_sound.play()
 
     if (self.action == 5 or self.action == 14 or self.action == 16 or self.action == 17): ########################### crouch
-      self.rect = pygame.Rect((self.rect.x, self.rect.y, 60, 110))
+      self.rect = pygame.Rect((self.rect.x, self.rect.y, 60, 90))
       self.offset = self.offsetCrouch
     else:
       self.rect = pygame.Rect((self.rect.x, self.rect.y, 60, 160))
@@ -683,6 +703,7 @@ class Fighter():
           self.attacking = False
           # self.attack_cooldown = 2
 
+
   def attack(self, target, surface, damage, attacking_rect, stunEnemy, cooldownSelf):
     # print("attack:  ", self.attack_type)
     # print("cooldown:  ", self.attack_cooldown)
@@ -698,10 +719,10 @@ class Fighter():
         target.dx = knockback_direction * self.knockback
 
         if target.backUp or target.crouch:
-          target.health -= 0.70
-          self.attack_cooldown = 200
+          target.health -= 0.20
+          self.attack_cooldown = 0
         else:
-          target.health -= damage/80
+          target.health -= damage/20
           target.attack_cooldown = stunEnemy
           self.attack_cooldown = cooldownSelf
           # print("hit: ", target.health)
