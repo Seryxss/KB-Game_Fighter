@@ -48,7 +48,7 @@ def play():
   magic_fx = pygame.mixer.Sound("assets/audio/magic.wav")
   magic_fx.set_volume(0.75)
 
-  #load background image
+  #load aaaaaaaaaround image
   bg_image = pygame.image.load("assets/images/background/background.jpg").convert_alpha()
 
   #load spritesheets

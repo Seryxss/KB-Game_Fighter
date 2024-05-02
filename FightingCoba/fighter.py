@@ -3,7 +3,7 @@ import math
 
 class Fighter():
   def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound):
-    self.upward_force = 30
+    self.upward_force = 20
     self.floating_duration = 40
     self.player = player
     self.size = data[0]
@@ -56,7 +56,7 @@ class Fighter():
 
     self.collision_rect.x = self.rect.x
     self.collision_rect.y = self.rect.y
-    self.SPEED = 5
+    self.SPEED = 3.5
     self.GRAVITY = 2
     self.dx = 0
     self.dy = 0
@@ -88,8 +88,8 @@ class Fighter():
           self.crouch = True
         #movement
         if self.flip == False:
-          if key[pygame.K_a] and self.crouch == False:
-            self.dx = -2
+          if key[pygame.K_a] and self.crouch ==False:
+            self.dx = -self.SPEED
             self.backUp = True
           if key[pygame.K_d] and self.crouch == False:
             self.dx = self.SPEED
@@ -99,7 +99,7 @@ class Fighter():
             self.dx = -self.SPEED
             self.running = True
           if key[pygame.K_d] and self.crouch == False:
-            self.dx = 2
+            self.dx = self.SPEED-3
             self.backUp = True
         #jump
         if key[pygame.K_w] and self.jump == False and self.crouch == False:
@@ -241,11 +241,11 @@ class Fighter():
             self.dx = -self.SPEED
             self.running = True
           if key[pygame.K_k] and self.crouch == False:
-            self.dx = 2
+            self.dx = self.SPEED
             self.backUp = True
         else:
           if key[pygame.K_h] and self.crouch == False:
-            self.dx = -2
+            self.dx = -self.SPEED
             self.backUp = True
           if key[pygame.K_k] and self.crouch == False:
             self.dx = self.SPEED
@@ -427,7 +427,6 @@ class Fighter():
       if self.flip == True:
         if self.player == 1:
             if self.crouch == True:
-              print("hit crouch")
               self.update_action(26)
             elif self.backUp == True:
               self.update_action(24)
@@ -436,7 +435,6 @@ class Fighter():
               self.update_action(2)#2:hit
         elif self.player == 2:
             if self.crouch == True:
-              print("hit crouch")
               self.update_action(26)
             elif self.backUp == True:
               self.update_action(25)
