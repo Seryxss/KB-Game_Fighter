@@ -16,6 +16,7 @@ class Fighter():
     self.image = self.animation_list[self.action][self.frame_index]
     self.update_time = pygame.time.get_ticks()
     self.rect = pygame.Rect((x, y, 60, 160))
+    self.collision_rect = pygame.Rect(self.rect.x, self.rect.y, self.rect.width, self.rect.height)
     self.vel_y = 0
     self.running = False
     self.backUp = False
@@ -53,6 +54,8 @@ class Fighter():
       self.target = target
       self.surface = surface
 
+    self.collision_rect.x = self.rect.x
+    self.collision_rect.y = self.rect.y
     self.SPEED = 5
     self.GRAVITY = 2
     self.dx = 0
@@ -64,6 +67,16 @@ class Fighter():
 
     #get keypresses
     key = pygame.key.get_pressed()
+
+    # Check for collision with the target player
+    if self.collision_rect.colliderect(target.collision_rect):
+    # Resolve collision by separating the players
+      if self.rect.centerx < target.rect.centerx:
+        self.rect.right = target.rect.left
+        self.collision_rect.right = target.collision_rect.left
+      else:
+        self.rect.left = target.rect.right
+        self.collision_rect.left = target.collision_rect.right
 
     #can only perform other actions if not currently attacking
     if self.attacking == False and self.alive == True and round_over == False and self.attack_cooldown == 0:
@@ -398,16 +411,27 @@ class Fighter():
   #handle animation update
   def update(self):
     #check what action the player is performing
+    if self.action == 5 or self.action == 14 or self.action == 16 or self.action == 17:
+      self.collision_rect.height = 110
+    else:
+      self.collision_rect.height = 160
+
     if self.health <= 0:
       self.health = 0
       self.alive = False
       self.update_action(1)#1:death
       self.target.update_action(24) # victor
     elif self.hit == True:
-      if self.player == 1:
-          self.rect.x -= self.knockback  # Knockback for Player 1
-      elif self.player == 2:
-          self.rect.x += self.knockback  # Knockback for Player 2
+      if self.flip == True:
+        if self.player == 1:
+            self.rect.x += self.knockback
+        elif self.player == 2:
+            self.rect.x += self.knockback
+      else:
+        if self.player == 1:
+            self.rect.x -= self.knockback
+        elif self.player == 2:
+            self.rect.x -= self.knockback
       self.update_action(2)#2:hit
     elif self.hit:
       self.hit = False
@@ -614,7 +638,7 @@ class Fighter():
         self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=50, cooldownSelf=0)
       if(self.frame_index >= 17 and self.frame_index < 20):
         attacking_rect = pygame.Rect(self.rect.centerx - (-1.2 * self.rect.width * 2*(self.flip-0.5)) - (1.4 * self.flip*self.rect.width), self.rect.y-15, 1.4 * self.rect.width, self.rect.height*0.25)
-        self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=50, cooldownSelf=300)
+        self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=50, cooldownSelf=150)
     else:
       self.damage = 0
       # if(self.frame_index == 0 ):
