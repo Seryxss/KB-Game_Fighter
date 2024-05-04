@@ -2,7 +2,7 @@ import pygame
 import math
 
 class Fighter():
-  def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound):
+  def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound, screen_width):
     self.upward_force = 20
     self.floating_duration = 40
     self.player = player
@@ -20,6 +20,7 @@ class Fighter():
     self.vel_y = 0
     self.running = False
     self.backUp = False
+    self.knockback_frames = 0
     self.jump = False
     self.crouch = False
     self.attacking = False
@@ -34,6 +35,8 @@ class Fighter():
     self.surface = None
     self.damage = 0
     self.knockback = 3
+    self.block = False
+    self.screen_width = screen_width
     self.offsetStand = data[2]
     self.offsetCrouch=[110,150]
     self.pauseHurtBox = 0
@@ -57,7 +60,7 @@ class Fighter():
 
     self.collision_rect.x = self.rect.x
     self.collision_rect.y = self.rect.y
-    self.SPEED = 3.5
+    self.SPEED = 3
     self.GRAVITY = 2
     self.dx = 0
     self.dy = 0
@@ -86,26 +89,43 @@ class Fighter():
       if self.player == 1 and self.action != 2:
         #crouch
         if key[pygame.K_s] and self.crouch == False and self.jump == False:
-          self.crouch = True
+            self.crouch = True
+            self.intialCrouch = True
+            self.dx = 0  # Set dx to 0 when crouching
+            if self.flip == False:
+                if key[pygame.K_a]:  # Check if moving backward and not already backing up
+                    self.backUp = True
+                else:
+                    self.backUp = False
+            else:
+                if key[pygame.K_d]:  # Check if moving backward and not already backing up
+                    self.backUp = True
+                else:
+                    self.backUp = False
         #movement
-        if self.flip == False:
-          if key[pygame.K_a] and self.crouch ==False:
-            self.dx = -self.SPEED
-            self.backUp = True
-          if key[pygame.K_d] and self.crouch == False:
-            self.dx = self.SPEED
-            self.running = True
-        else:
-          if key[pygame.K_a] and self.crouch == False:
-            self.dx = -self.SPEED
-            self.running = True
-          if key[pygame.K_d] and self.crouch == False:
-            self.dx = self.SPEED-3
-            self.backUp = True
+        if not self.crouch:  # Only allow movement when not crouching
+            if self.flip == False:
+                if key[pygame.K_a]:
+                    self.dx = -self.SPEED
+                    self.backUp = True
+                if key[pygame.K_d]:
+                    self.dx = self.SPEED
+                    self.running = True
+                    self.backUp = False
+            else:
+                if key[pygame.K_a]:
+                    self.dx = -self.SPEED
+                    self.running = True
+                    self.backUp = False
+                if key[pygame.K_d]:
+                    self.dx = self.SPEED
+                    self.backUp = True
         #jump
         if key[pygame.K_w] and self.jump == False and self.crouch == False:
           self.vel_y = -30
           self.jump = True
+          self.initial_flip = self.flip
+
         #attack punch
         if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == False and self.crouch == False:
           #determine which attack type was used
@@ -236,25 +256,41 @@ class Fighter():
         #crouch
         if key[pygame.K_j] and self.crouch == False and self.jump == False:
             self.crouch = True
+            self.intialCrouch = True
+            self.dx = 0  # Set dx to 0 when crouching
+            if self.flip == False:
+                if key[pygame.K_h]:  # Check if moving backward and not already backing up
+                    self.backUp = True
+                else:
+                    self.backUp = False
+            else:
+                if key[pygame.K_k]:  # Check if moving backward and not already backing up
+                    self.backUp = True
+                else:
+                    self.backUp = False
         #movement
-        if self.flip == True:
-          if key[pygame.K_h] and self.crouch == False:
-            self.dx = -self.SPEED
-            self.running = True
-          if key[pygame.K_k] and self.crouch == False:
-            self.dx = self.SPEED
-            self.backUp = True
-        else:
-          if key[pygame.K_h] and self.crouch == False:
-            self.dx = -self.SPEED
-            self.backUp = True
-          if key[pygame.K_k] and self.crouch == False:
-            self.dx = self.SPEED
-            self.running = True
-        #jump
-        if key[pygame.K_u] and self.jump == False:
+        if not self.crouch:  # Only allow movement when not crouching
+            if self.flip == False:
+                if key[pygame.K_a]:
+                    self.dx = -self.SPEED
+                    self.backUp = True
+                if key[pygame.K_d]:
+                    self.dx = self.SPEED
+                    self.running = True
+                    self.backUp = False
+            else:
+                if key[pygame.K_h]:
+                    self.dx = -self.SPEED
+                    self.running = True
+                    self.backUp = False
+                if key[pygame.K_k]:
+                    self.dx = self.SPEED
+                    self.backUp = True
+        #jump            
+        if key[pygame.K_u] and self.jump == False and self.crouch == False:
           self.vel_y = -30
           self.jump = True
+          self.initial_flip = self.flip
         #attack punch
         if (key[pygame.K_o] or key[pygame.K_p]) and self.jump == False and self.crouch == False:
           
@@ -391,6 +427,18 @@ class Fighter():
       self.jump = False
       self.dy = screen_height - 110 - self.rect.bottom
 
+    if self.jump and self.action == 3:
+        if self.initial_flip == False:
+            self.dx = self.SPEED * 2  # Move forward when facing right
+        else:
+            self.dx = -self.SPEED * 2
+    
+    if not (self.jump and self.action == 3):
+        if target.rect.centerx > self.rect.centerx:
+            self.flip = False
+        else:
+            self.flip = True
+
     if self.crouch == True:
       #self.vel_y = 500
       #print(self.rect.y)
@@ -406,6 +454,14 @@ class Fighter():
     if self.attack_cooldown > 0:
       self.attack_cooldown -= 1
 
+    if self.action == 3 and self.frame_index == 0:
+        self.dx = 0
+
+    if self.knockback_frames > 0:
+      knockback_direction = -1 if self.flip else 1
+      self.dx = -knockback_direction * self.knockback
+      self.knockback_frames -= 1
+
     #update player position
     self.rect.x += self.dx
     self.rect.y += self.dy
@@ -420,44 +476,52 @@ class Fighter():
       self.collision_rect.height = 160
 
     if self.health <= 0:
-      self.health = 0
-      self.alive = False
-      self.update_action(1)#1:death
-      self.target.update_action(24) # victor
+        self.health = 0
+        self.alive = False
+        self.update_action(1)  # 1:death
+        self.target.update_action(24)  # victor
     elif self.hit == True:
-      if self.flip == True:
-        if self.player == 1:
-            if self.crouch == True:
-              self.update_action(26)
-            elif self.backUp == True:
-              self.update_action(24)
-            else:
-              self.rect.x += self.knockback
-              self.update_action(2)#2:hit
-        elif self.player == 2:
-            if self.crouch == True:
-              self.update_action(26)
-            elif self.backUp == True:
-              self.update_action(25)
-            else:
-              self.rect.x += self.knockback
-              self.update_action(2)#2:hit
-      else:
-        if self.player == 1:
-            if self.backUp == True:
-              self.update_action(25)
-            else:
-              self.rect.x -= self.knockback
-              self.update_action(2)#2:hit
-        elif self.player == 2:
-            if self.backUp == True:
-              self.update_action(25)
-            else:
-              self.rect.x -= self.knockback
-              self.update_action(2)#2:hit
+        if self.flip == True:
+            if self.player == 1:
+                if self.crouch == True:
+                    self.update_action(26)
+                elif self.backUp == True:
+                    self.block = True
+                    self.update_action(25)
+                else:
+                    self.rect.x += self.knockback
+                    self.update_action(2)  # 2:hit
+            elif self.player == 2:
+                if self.crouch == True:
+                    self.update_action(26)
+                elif self.backUp == True:
+                    self.block = True
+                    self.update_action(25)
+                else:
+                    self.rect.x += self.knockback
+                    self.update_action(2)  # 2:hit
+        else:
+            if self.player == 1:
+                if self.crouch == True:
+                    self.update_action(26)
+                elif self.backUp == True:
+                    self.block = True
+                    self.update_action(25)
+                else:
+                    self.rect.x -= self.knockback
+                    self.update_action(2)  # 2:hit
+            elif self.player == 2:
+                if self.crouch == True:
+                    self.update_action(26)
+                elif self.backUp == True:
+                    self.block = True
+                    self.update_action(25)
+                else:
+                    self.rect.x -= self.knockback
+                    self.update_action(2)  # 2:hit
     elif self.hit:
-      self.hit = False
-      self.dx = 0  
+        self.hit = False
+        self.dx = 0
     elif self.attacking == True and self.attack_cooldown == 0:
       if self.attack_type == 1:
         self.update_action(6)#6:lp
@@ -496,26 +560,27 @@ class Fighter():
       elif self.attack_type == 18:
         self.update_action(23)#23:special 2
     elif self.jump == True:
-      self.update_action(3)#3:jump
+        self.update_action(3)  # 3:jump
     elif self.running == True:
-      self.update_action(4)#4:run
-    elif self.backUp == True:
-      self.update_action(4)#4:backUp
+        self.update_action(4)  # 4:run
+    elif self.backUp == True and not self.crouch:
+        self.update_action(4)  # 4:backUp
     elif self.crouch == True:
-        self.update_action(5)#5:crouch
+        self.update_action(5)  # 5:crouch
     else:
-      self.crouch = False
-      self.jump = False
-      self.update_action(0)#0:idle
-      self.rect.y=330
+        self.intialCrouch = False
+        self.crouch = False
+        self.jump = False
+        self.update_action(0)  # 0:idle
+        self.rect.y = 330
 
     # if(self.action != 0):
     #   print("damage: ", self.damage)
       # print("action:  ", self.action)
       # print("frame_index:  ", self.frame_index)
-
-    if self.attack_cooldown != 0:
-      print(self.attack_cooldown)
+  
+    # if self.attack_cooldown != 0:
+    #   print( )
     # stunEnemy berdasarkan collision, nanti custom tambah berdasarkan frame kenanya
     if (self.action == 6): ############################ lp
       if(self.frame_index == 0 ):
@@ -705,44 +770,116 @@ class Fighter():
           #if the player was in the middle of an attack, then the attack is stopped
           self.attacking = False
           # self.attack_cooldown = 2
-    if (self.hit == True):
-      if self.pauseHurtBox == 0:
-        self.pauseHurtBox = 30
-    if self.pauseHurtBox > 0:
-      self.pauseHurtBox -= 1
+    # if (self.hit == True):
+    #   if self.pauseHurtBox == 0:
+    #     self.pauseHurtBox = 30
+    # if self.pauseHurtBox > 0:
+    #   self.pauseHurtBox -= 1
 
-    if self.pauseHurtBox > 0:
-      self.rect = pygame.Rect(self.rect.x, 330, 0, 0)
-    # else:
-    #   self.rect = pygame.Rect(self.rect.x, self.rect.y, 60, 100)
+    # # print (self.rect.y)
+    # if self.pauseHurtBox > 0:
+    #   # self.rect = pygame.Rect(self.rect.x, 330, 0, 0)
+    #   self.rect = pygame.Rect(self.rect.x, self.rect.y-1, 0, 0)
+    # # else:
+    # #   self.rect = pygame.Rect(self.rect.x, self.rect.y, 60, 100)
     
 
 
   def attack(self, target, surface, damage, attacking_rect, stunEnemy, cooldownSelf):
-    # print("attack:  ", self.attack_type)
-    # print("cooldown:  ", self.attack_cooldown)
-    # print("damage:  ", damage/4)
     if self.attack_cooldown == 0:
-      pygame.draw.rect(surface, (255,0,0, 128), attacking_rect)
+        pygame.draw.rect(surface, (255, 0, 0, 128), attacking_rect)
 
-      #check if the attacking player is the player to attack
-      if attacking_rect.colliderect(target.rect):
-        self.attacking = True
-        target.hit = True
-        knockback_direction = -1 if self.flip else 1
-        target.dx = knockback_direction * self.knockback
+        if attacking_rect.colliderect(target.rect):
+            self.attacking = True
+            target.hit = True
+            knockback_direction = -1 if self.flip else 1
 
-        if target.backUp or target.crouch:
-          target.health -= 0.20
-          self.attack_cooldown = 0
-        else:
-          target.health -= damage/20
-          target.attack_cooldown = stunEnemy
-          self.attack_cooldown = cooldownSelf
-          # print("hit: ", target.health)
+            if self.intialCrouch:
+              print("player Crouch")
+              #Cek Edge
+              target_at_edge = False
+              if target.rect.left <= 0 and knockback_direction == -1:
+                  target_at_edge = True
+              elif target.rect.right >= self.screen_width and knockback_direction == 1:
+                target_at_edge = True
+              if target.crouch:
+                print("target Crouch")
+                  #Cek Backup
+                if target.backUp:         
+                    # Target backing up (blocking)
+                    self.knockback_frames = 10  # Set knockback frames for the attacking player
+                elif target_at_edge:
+                    # Target at the edge
+                    self.knockback_frames = 10
+                    target.health -= damage / 20
+                    target.attack_cooldown = stunEnemy
+                else:             
+                    # Target not backing up (hit)
+                    target.dx = -knockback_direction * self.knockback
+                    target.health -= damage / 20
+                    target.attack_cooldown = stunEnemy
+                
+              else: #Target Standing
+                if target.backUp:
+                   target.dx = -knockback_direction * self.knockback
+                elif target_at_edge:
+                  print("target at edge")
+                  # Target at the edge
+                  self.knockback_frames = 10
+                  target.health -= damage / 20
+                  target.attack_cooldown = stunEnemy
+                else:
+                  print ("target standing")
+                  target.dx = -knockback_direction * self.knockback
+                  target.health -= damage / 20
+                  target.attack_cooldown = stunEnemy
 
 
-
+            if not self.intialCrouch: #PlayerStanding
+              print ("player standing")
+              #Cek Edge
+              target_at_edge = False
+              if target.rect.left <= 0 and knockback_direction == -1:
+                  target_at_edge = True
+              elif target.rect.right >= self.screen_width and knockback_direction == 1:
+                  target_at_edge = True
+              if target.crouch: #Target Crouching
+                print ("target crouching")
+                if target.backUp:         
+                    print("target back up")
+                    # Target backing up (blocking)
+                    self.knockback_frames = 10  # Set knockback frames for the attacking player
+                elif target_at_edge:
+                    print("target at edge")
+                    # Target at the edge
+                    self.knockback_frames = 10
+                    target.health -= damage / 20
+                    target.attack_cooldown = stunEnemy
+                else:             
+                    print("target not back up")
+                    # Target not backing up (hit)
+                    target.dx = -knockback_direction * self.knockback
+                    target.health -= damage / 20
+                    target.attack_cooldown = stunEnemy
+              
+              else: #Target Standing
+                if target.backUp:
+                    print("target back up")
+                    # Target backing up (blocking)
+                    self.knockback_frames = 10  # Set knockback frames for the attacking player
+                elif target_at_edge:
+                    print("target at edge")
+                    # Target at the edge
+                    self.knockback_frames = 10
+                    target.health -= damage / 20
+                    target.attack_cooldown = stunEnemy
+                else:
+                    print("target not back up")
+                    # Target not backing up (hit)
+                    target.dx = -knockback_direction * self.knockback
+                    target.health -= damage / 20
+                    target.attack_cooldown = stunEnemy
+    
   def update_action(self, new_action):
     #check if the new action is different to the previous one
     if new_action != self.action:

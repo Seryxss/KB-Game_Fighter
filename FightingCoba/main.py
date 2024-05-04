@@ -11,8 +11,11 @@ SCREEN_HEIGHT = 600
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Brawler")
 
+
 def play():
   #create game window
+  screen_info = pygame.display.Info()
+  screen_width = screen_info.current_w
 
   #set framerate
   clock = pygame.time.Clock()
@@ -92,8 +95,8 @@ def play():
 
 
   #create two instances of fighters
-  fighter_1 = Fighter(1, 200, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)
-  fighter_2 = Fighter(2, 700, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx)
+  fighter_1 = Fighter(1, 200, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+  fighter_2 = Fighter(2, 700, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
 
   global plays
   global score
