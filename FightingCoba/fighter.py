@@ -40,6 +40,7 @@ class Fighter():
     self.offsetStand = data[2]
     self.offsetCrouch=[110,150]
     self.pauseHurtBox = 0
+    self.jump_hit = False
 
   def load_images(self, sprite_sheet, animation_steps):
     #extract images from spritesheet
@@ -271,10 +272,10 @@ class Fighter():
         #movement
         if not self.crouch:  # Only allow movement when not crouching
             if self.flip == False:
-                if key[pygame.K_a]:
+                if key[pygame.K_h]:
                     self.dx = -self.SPEED
                     self.backUp = True
-                if key[pygame.K_d]:
+                if key[pygame.K_k]:
                     self.dx = self.SPEED
                     self.running = True
                     self.backUp = False
@@ -427,7 +428,7 @@ class Fighter():
       self.jump = False
       self.dy = screen_height - 110 - self.rect.bottom
 
-    if self.jump and self.action == 3:
+      if self.jump and self.action == 3:
         if self.initial_flip == False:
             self.dx = self.SPEED * 2  # Move forward when facing right
         else:
@@ -439,6 +440,18 @@ class Fighter():
         else:
             self.flip = True
 
+     # Apply gravity and downward movement for the target if it was hit while jumping
+    if target.jump_hit:
+        target.vel_y += target.GRAVITY
+        target.dy += target.vel_y
+
+        # Reset the jump_hit flag when the target lands
+        if target.rect.bottom + target.dy > screen_height - 110:
+            target.vel_y = 0
+            target.jump = False
+            target.dy = screen_height - 110 - target.rect.bottom
+            target.jump_hit = False
+    
     if self.crouch == True:
       #self.vel_y = 500
       #print(self.rect.y)
@@ -834,7 +847,18 @@ class Fighter():
                   target.health -= damage / 20
                   target.attack_cooldown = stunEnemy
 
+            if target.jump:
+                # Apply upward force to the target
+                target.vel_y = -20  # Adjust the value to control the upward force
+                target.jump_hit = True
+                target.dx = 0
 
+            if not self.intialCrouch:
+                if not target.crouch:
+                    if not target.backUp:
+                        target.dx = -knockback_direction * (self.knockback*2)
+                        target.health -= damage / 20
+                        target.attack_cooldown = stunEnemy
             if not self.intialCrouch: #PlayerStanding
               print ("player standing")
               #Cek Edge
