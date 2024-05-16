@@ -95,8 +95,8 @@ def play():
 
 
   #create two instances of fighters
-  fighter_1 = Fighter(1, 200, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
-  fighter_2 = Fighter(2, 700, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
+  fighter_1 = Fighter(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+  fighter_2 = Fighter(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
 
   global plays
   global score
@@ -148,8 +148,8 @@ def play():
       if pygame.time.get_ticks() - round_over_time > ROUND_OVER_COOLDOWN:
         round_over = False
         intro_count = 3
-        fighter_1 = Fighter(1, 200, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)
-        fighter_2 = Fighter(2, 700, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx)
+        fighter_1 = Fighter(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx,screen_width)
+        fighter_2 = Fighter(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx,screen_width)
 
     # print(score)
     if score[0] == 2 or score[1] == 2:
