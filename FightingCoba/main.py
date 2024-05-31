@@ -1,6 +1,8 @@
 import pygame, sys
 from pygame import mixer
-from fighter import Fighter
+from FighterPvP import FighterPvP
+from FighterPvAI import FighterPvAI
+from FighterAIvAI import FighterAIvAI
 from button import Button
 
 mixer.init()
@@ -12,7 +14,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Brawler")
 
 
-def play():
+def play(mode): #mode = 1 for PvP, mode = 2 for PvAI, mode = 3 for AIvAI
   #create game window
   screen_info = pygame.display.Info()
   screen_width = screen_info.current_w
@@ -27,7 +29,7 @@ def play():
   WHITE = (255, 255, 255)
 
   #define game variables
-  intro_count = 2
+  intro_count = 3
   last_count_update = pygame.time.get_ticks()
   round_over = False
   ROUND_OVER_COOLDOWN = 2000
@@ -95,8 +97,15 @@ def play():
 
 
   #create two instances of fighters
-  fighter_1 = Fighter(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
-  fighter_2 = Fighter(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
+  if mode == 1:
+    fighter_1 = FighterPvP(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+    fighter_2 = FighterPvP(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
+  if mode == 2:
+    fighter_1 = FighterPvAI(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+    fighter_2 = FighterPvAI(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
+  if mode == 3:
+    fighter_1 = FighterAIvAI(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+    fighter_2 = FighterAIvAI(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
 
   global plays
   global score
@@ -148,8 +157,15 @@ def play():
       if pygame.time.get_ticks() - round_over_time > ROUND_OVER_COOLDOWN:
         round_over = False
         intro_count = 3
-        fighter_1 = Fighter(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx,screen_width)
-        fighter_2 = Fighter(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx,screen_width)
+        if mode == 1:
+          fighter_1 = FighterPvP(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx,screen_width)
+          fighter_2 = FighterPvP(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx,screen_width)
+        if mode == 2:
+          fighter_1 = FighterPvAI(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx,screen_width)
+          fighter_2 = FighterPvAI(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx,screen_width)
+        if mode == 3:
+          fighter_1 = FighterAIvAI(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx,screen_width)
+          fighter_2 = FighterAIvAI(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx,screen_width)
 
     # print(score)
     if score[0] == 2 or score[1] == 2:
@@ -175,6 +191,9 @@ def get_font(size): # Returns Press-Start-2P in the desired size
 BG = pygame.image.load("assets/Background.png")
 def main_menu():
     global runs
+    pygame.mixer.music.load("assets/audio/menuMusic.mp3")
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1, 8.0, 5000)
     while runs:
         screen.blit(BG, (0, 0))
 
@@ -183,16 +202,19 @@ def main_menu():
         MENU_TEXT = get_font(100).render("PUNCH EM", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(510, 150))
 
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(500, 330), 
-                            text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="Black")
+        PvP_Button = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(300, 320), 
+                            text_input="P vs P", font=get_font(50), base_color="#d7fcd4", hovering_color="Black")
+        PvAI_Button = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(700, 320), 
+                            text_input="P vs AI", font=get_font(45), base_color="#d7fcd4", hovering_color="Black")
+        AIvAI_Button = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(300, 450), 
+                            text_input="AI vs AI", font=get_font(45), base_color="#d7fcd4", hovering_color="Black")
         # OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400), 
         #                     text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(500, 480), 
-                            text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="Black")
-
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(700, 450), 
+                            text_input="Quit", font=get_font(45), base_color="#d7fcd4", hovering_color="Black")
         screen.blit(MENU_TEXT, MENU_RECT)
 
-        for button in [PLAY_BUTTON, QUIT_BUTTON]:
+        for button in [PvP_Button, PvAI_Button, AIvAI_Button, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(screen)
         
@@ -202,8 +224,12 @@ def main_menu():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    play()
+                if PvP_Button.checkForInput(MENU_MOUSE_POS):
+                    play(1)
+                if PvAI_Button.checkForInput(MENU_MOUSE_POS):
+                    play(2)
+                if AIvAI_Button.checkForInput(MENU_MOUSE_POS):
+                    play(3)
                 # if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                 #     options()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):

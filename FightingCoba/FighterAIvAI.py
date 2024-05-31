@@ -1,7 +1,7 @@
 import pygame
 import math
 
-class Fighter():
+class FighterAIvAI():
   def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound, screen_width):
     self.upward_force = 20
     self.floating_duration = 40
