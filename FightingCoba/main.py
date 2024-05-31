@@ -32,7 +32,7 @@ def play():
   round_over = False
   ROUND_OVER_COOLDOWN = 2000
 
-  #define fighter variablesksssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+  #define fighter variables
   WARRIOR_SIZE = 250
   WARRIOR_SCALE = 2
   WARRIOR_OFFSET = [110, 120]
@@ -93,7 +93,6 @@ def play():
     pygame.draw.rect(screen, RED, (x, y, 400, 30))
     pygame.draw.rect(screen, YELLOW, (x, y, 400 * ratio, 30))
 
-
   #create two instances of fighters
   fighter_1 = Fighter(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
   fighter_2 = Fighter(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
@@ -114,8 +113,8 @@ def play():
     #update countdown
     if intro_count <= 0:  
       #move fighters
-      fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2, round_over)
-      fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_1, round_over)
+      fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_1, round_over)
+      fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2, round_over)
     else:
       #display count timer
       draw_text(str(intro_count), count_font, RED, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)
@@ -203,12 +202,57 @@ def main_menu():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    play()
+                    select_mode()
                 # if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                 #     options()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
+
+        pygame.display.update()
+def select_mode():
+    global runs, mode
+    while runs:
+        screen.blit(BG, (0, 0))
+
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        MENU_TEXT = get_font(100).render("PUNCH EM", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(center=(510, 150))
+
+        PvP_Button = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(300, 350), 
+                            text_input="P v P", font=get_font(50), base_color="#d7fcd4", hovering_color="Black")
+        # OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400), 
+        #                     text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+        AIvsAI_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(700, 350), 
+                            text_input="AI v AI", font=get_font(45), base_color="#d7fcd4", hovering_color="Black")
+        Back_Button = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(510, 500), 
+                            text_input="Back", font=get_font(45), base_color="#d7fcd4", hovering_color="Black")
+
+        screen.blit(MENU_TEXT, MENU_RECT)
+
+        for button in [PvP_Button, AIvsAI_BUTTON, Back_Button]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(screen)
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                runs = False
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PvP_Button.checkForInput(MENU_MOUSE_POS):
+                    mode = 'pvp'
+                    play()
+                # if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                #     options()
+                if AIvsAI_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    mode = 'aivAI'
+                    play()
+                    # pygame.quit()
+                    # sys.exit()
+                if Back_Button.checkForInput(MENU_MOUSE_POS):
+                    main_menu()
 
         pygame.display.update()
 
