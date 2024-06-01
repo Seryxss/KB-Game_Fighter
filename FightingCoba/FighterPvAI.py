@@ -41,6 +41,22 @@ class FighterPvAI():
     self.offsetCrouch=[110,150]
     self.pauseHurtBox = 0
     self.jump_hit = False
+    
+    self.reaction_frame = 1600 #ini dari ticks nya idk translasinya ke fps :V (jadi tiap 1600ticks, blablabla)
+    self.last_count_update = pygame.time.get_ticks()
+    self.keys={"W" : False,
+               "A" : False,
+               "S" : False,
+               "D" : False,
+               "SPACE" : False,
+               "R" : False,
+               "T" : False,
+               "F" : False,
+               "G" : False,
+               "C" : False,
+               "V" : False
+               # aku mikir buat nambahi combi specialnya skalian kek "ST" = False, dst, enak gimana?
+               }
 
   def load_images(self, sprite_sheet, animation_steps):
     #extract images from spritesheet
@@ -250,167 +266,180 @@ class FighterPvAI():
             self.attacking = True  
             self.damage = 26
                 
-    
+      if (pygame.time.get_ticks() - self.last_count_update) >= self.reaction_frame:
+        self.last_count_update = pygame.time.get_ticks()
+        self.keys["R"] = True
+      else:
+         self.keys["SPACE"] = False
+         self.keys["R"] = False
+         self.keys["T"] = False
+         self.keys["F"] = False
+         self.keys["G"] = False
+         self.keys["C"] = False
+         self.keys["V"] = False
+      self.keys["W"] = True
+      # print(pygame.time.get_ticks() - self.last_count_update)
+      
       ####################################check player 2 controls################################################################
 
       if self.player == 2 and self.action != 2:
         distance = math.sqrt((self.rect.centerx - target.rect.centerx)**2 + (self.rect.centery - target.rect.centery)**2)
         #crouch
-        if key[pygame.K_j] and self.crouch == False and self.jump == False:
+        if self.keys["S"] and self.crouch == False and self.jump == False:
             self.crouch = True
             self.intialCrouch = True
             self.dx = 0  # Set dx to 0 when crouching
             if self.flip == False:
-                if key[pygame.K_h]:  # Check if moving backward and not already backing up
+                if self.keys["A"]:  # Check if moving backward and not already backing up
                     self.backUp = True
                 else:
                     self.backUp = False
             else:
-                if key[pygame.K_k]:  # Check if moving backward and not already backing up
+                if self.keys["D"]:  # Check if moving backward and not already backing up
                     self.backUp = True
                 else:
                     self.backUp = False
         #movement
         if not self.crouch:  # Only allow movement when not crouching
             if self.flip == False:
-                if key[pygame.K_h]:
+                if self.keys["A"]:
                     self.dx = -self.SPEED
                     self.backUp = True
-                if key[pygame.K_k]:
+                if self.keys["D"]:
                     self.dx = self.SPEED
                     self.running = True
                     self.backUp = False
             else:
-                if key[pygame.K_h]:
+                if self.keys["A"]:
                     self.dx = -self.SPEED
                     self.running = True
                     self.backUp = False
-                if key[pygame.K_k]:
+                if self.keys["D"]:
                     self.dx = self.SPEED
                     self.backUp = True
         #jump            
-        if key[pygame.K_u] and self.jump == False and self.crouch == False:
+        if self.keys["W"] and self.jump == False and self.crouch == False:
           self.vel_y = -30
           self.jump = True
           self.initial_flip = self.flip
           
         #attack punch
-        if (key[pygame.K_o] or key[pygame.K_p]) and self.jump == False and self.crouch == False:
+        if (self.keys["R"] or self.keys["T"]) and self.jump == False and self.crouch == False:
           
           #determine which attack type was used
           if distance < 80:
-            if key[pygame.K_o]:
+            if self.keys["R"]:
               self.attack_type = 13
               self.attacking = True
               self.damage = 8
               
-            if key[pygame.K_p]:
+            if self.keys["T"]:
               self.attack_type = 14
               self.attacking = True
               self.damage = 28
               
           else :  
-            if key[pygame.K_o]:
+            if self.keys["R"]:
               self.attack_type = 1
               self.attacking = True
               self.damage = 12
               
-            if key[pygame.K_p]:
+            if self.keys["T"]:
               self.attack_type = 2
               self.attacking = True
               self.damage = 28
               
         #attack while jumping
-        if (key[pygame.K_o] or key[pygame.K_p]) and self.jump == True:
+        if (self.keys["R"] or self.keys["T"]) and self.jump == True:
           
           #determine which attack type was used
-          if key[pygame.K_o]:
+          if self.keys["R"]:
             self.attack_type = 9
             self.attacking = True
             self.damage = 12
             
-          if key[pygame.K_p]:
+          if self.keys["T"]:
             self.attack_type = 10
             self.attacking = True
             self.damage = 26
             
         #attack while crouching
-        if (key[pygame.K_o] or key[pygame.K_p]) and self.crouch == True:
+        if (self.keys["R"] or self.keys["T"]) and self.crouch == True:
           
           #determine which attack type was used
-          if key[pygame.K_o]:
+          if self.keys["R"]:
             self.attack_type = 5
             self.attacking = True
             self.damage = 8  
             
-          if key[pygame.K_p]:
+          if self.keys["T"]:
             self.attack_type = 6  
             self.attacking = True
             self.damage = 28
               
         # special attack
-        if key[pygame.K_COMMA] and self.jump == False and self.crouch == False:
+        if self.keys["C"] and self.jump == False and self.crouch == False:
           
           self.attack_type = 17
           self.attacking = True
           self.damage = 24
           
-        if key[pygame.K_PERIOD]  and self.jump == False and self.crouch == False:
+        if self.keys["V"]  and self.jump == False and self.crouch == False:
           
           self.attack_type = 18
           self.attacking = True
           self.damage = 32
           
         #attack kick
-        if (key[pygame.K_l] or key[pygame.K_SEMICOLON]) and self.jump == False and self.crouch == False:
+        if (self.keys["F"] or self.keys["G"]) and self.jump == False and self.crouch == False:
           
           #determine which attack type was used
           if distance < 80:
-            if key[pygame.K_l]:
+            if self.keys["F"]:
               self.attack_type = 15
               self.attacking = True
               self.damage = 12
               
-            if key[pygame.K_SEMICOLON]:
+            if self.keys["G"]:
               self.attack_type = 16
               self.attacking = True
               self.damage = 28
               
           else : 
-            if key[pygame.K_l] :
+            if self.keys["F"] :
               self.attack_type = 3
               self.attacking = True
               self.damage = 14
               
-            if key[pygame.K_SEMICOLON]:
+            if self.keys["G"]:
               self.attack_type = 4
               self.attacking = True
               self.damage = 30
               
           #attack while jumping
-        if (key[pygame.K_l] or key[pygame.K_SEMICOLON]) and self.jump == True:
+        if (self.keys["F"] or self.keys["G"]) and self.jump == True:
           
           #determine which attack type was used
-          if key[pygame.K_l]:
+          if self.keys["F"]:
             self.attack_type = 11
             self.attacking = True
             self.damage = 14
             
-          if key[pygame.K_SEMICOLON]:
+          if self.keys["G"]:
             self.attack_type = 12
             self.attacking = True
             self.damage = 30
             
         #attack while crouching
-        if (key[pygame.K_l] or key[pygame.K_SEMICOLON]) and self.crouch == True:
+        if (self.keys["F"] or self.keys["G"]) and self.crouch == True:
           
           #determine which attack type was used
-          if key[pygame.K_l]:
+          if self.keys["F"]:
             self.attack_type = 7
             self.attacking = True
             self.damage = 8
             
-          if key[pygame.K_SEMICOLON]:
+          if self.keys["G"]:
             self.attack_type = 8
             self.attacking = True
             self.damage = 26
