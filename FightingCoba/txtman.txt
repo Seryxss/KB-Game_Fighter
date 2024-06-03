@@ -42,7 +42,7 @@ class FighterPvAI():
     self.pauseHurtBox = 0
     self.jump_hit = False
     
-    self.reaction_frame = 1000/60 *  15 #ini dari ticks nya idk translasinya ke fps :V (jadi tiap 1600ticks, blablabla)
+    self.reaction_frame = 1000 #ini dari ticks nya idk translasinya ke fps :V (jadi tiap 1600ticks, blablabla)
     self.last_count_update = pygame.time.get_ticks()
     self.keys={"W" : False,
                "A" : False,
