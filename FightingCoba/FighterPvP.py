@@ -43,6 +43,7 @@ class FighterPvP():
     self.jump_hit = False
     self.jump_move_limit_MAIN = 1
     self.jump_move_limit = self.jump_move_limit_MAIN
+    self.jump_speed_boost = False
 
   def load_images(self, sprite_sheet, animation_steps):
     #extract images from spritesheet
@@ -105,29 +106,43 @@ class FighterPvP():
                     self.backUp = True
                 else:
                     self.backUp = False
-        #movement
-        if not self.crouch:  # Only allow movement when not crouching
-            if self.flip == False:
-                if key[pygame.K_a]:
-                    self.dx = -self.SPEED
-                    self.backUp = True
-                if key[pygame.K_d]:
-                    self.dx = self.SPEED
-                    self.running = True
-                    self.backUp = False
-            else:
-                if key[pygame.K_a]:
-                    self.dx = -self.SPEED
-                    self.running = True
-                    self.backUp = False
-                if key[pygame.K_d]:
-                    self.dx = self.SPEED
-                    self.backUp = True
+        
         #jump
         if key[pygame.K_w] and self.jump == False and self.crouch == False:
           self.vel_y = -30
           self.jump = True
           self.initial_flip = self.flip
+          self.jump_speed_boost = True
+        #movement
+        if not self.crouch:  # Only allow movement when not crouching
+          if self.flip == False:
+              if key[pygame.K_a]:
+                  if self.jump_speed_boost:
+                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = -self.SPEED
+                  self.backUp = True
+              if key[pygame.K_d]:
+                  if self.jump_speed_boost:
+                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = self.SPEED
+                  self.running = True
+                  self.backUp = False
+          else:
+              if key[pygame.K_a]:
+                  if self.jump_speed_boost:
+                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = -self.SPEED
+                  self.running = True
+                  self.backUp = False
+              if key[pygame.K_d]:
+                  if self.jump_speed_boost:
+                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = self.SPEED
+                  self.backUp = True
 
         #attack punch
         if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == False and self.crouch == False:
@@ -275,29 +290,42 @@ class FighterPvP():
                     self.backUp = True
                 else:
                     self.backUp = False
-        #movement
-        if not self.crouch:  # Only allow movement when not crouching
-            if self.flip == False:
-                if key[pygame.K_h]:
-                    self.dx = -self.SPEED
-                    self.backUp = True
-                if key[pygame.K_k]:
-                    self.dx = self.SPEED
-                    self.running = True
-                    self.backUp = False
-            else:
-                if key[pygame.K_h]:
-                    self.dx = -self.SPEED
-                    self.running = True
-                    self.backUp = False
-                if key[pygame.K_k]:
-                    self.dx = self.SPEED
-                    self.backUp = True
-        #jump            
+        #jump
         if key[pygame.K_u] and self.jump == False and self.crouch == False:
           self.vel_y = -30
           self.jump = True
           self.initial_flip = self.flip
+          self.jump_speed_boost = True
+        #movement
+        if not self.crouch:  # Only allow movement when not crouching
+          if self.flip == False:
+              if key[pygame.K_h]:
+                  if self.jump_speed_boost:
+                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = -self.SPEED
+                  self.backUp = True
+              if key[pygame.K_k]:
+                  if self.jump_speed_boost:
+                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = self.SPEED
+                  self.running = True
+                  self.backUp = False
+          else:
+              if key[pygame.K_h]:
+                  if self.jump_speed_boost:
+                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = -self.SPEED
+                  self.running = True
+                  self.backUp = False
+              if key[pygame.K_k]:
+                  if self.jump_speed_boost:
+                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = self.SPEED
+                  self.backUp = True
           
         #attack punch
         if (key[pygame.K_o] or key[pygame.K_p]) and self.jump == False and self.crouch == False:
@@ -438,15 +466,16 @@ class FighterPvP():
       self.vel_y = 0
       self.jump = False
       self.dy = screen_height - 110 - self.rect.bottom
+      self.jump_speed_boost = False
     if self.rect.bottom + self.dy == screen_height - 110:
       #  # print("GROUNDDD", self.player)
       self.jump_move_limit = self.jump_move_limit_MAIN
 
-    if self.jump and self.action == 3:
-        if self.initial_flip == False:
-            self.dx = self.SPEED * 2
-        else:
-            self.dx = -self.SPEED * 2
+    # if self.jump and self.action == 3:
+    #     if self.initial_flip == False:
+    #         self.dx = self.SPEED * 2
+    #     else:
+    #         self.dx = -self.SPEED * 2
     
     if not (self.jump and self.action == 3):
         if target.rect.centerx > self.rect.centerx:
@@ -517,7 +546,7 @@ class FighterPvP():
                     self.update_action(25)
                 elif self.jump == True:
                     self.dx = 0
-                    self.rect.x += self.knockback * 4
+                    self.rect.x += self.knockback * 2
                 else:
                     self.rect.x += self.knockback
                     self.update_action(2)  # 2:hit
@@ -529,7 +558,7 @@ class FighterPvP():
                     self.update_action(25)
                 elif self.jump == True:
                     self.dx = 0
-                    self.rect.x += self.knockback * 4
+                    self.rect.x += self.knockback * 2
                 else:
                     self.rect.x += self.knockback
                     self.update_action(2)  # 2:hit
@@ -554,7 +583,7 @@ class FighterPvP():
                     self.update_action(25)
                 elif self.jump == True:
                     self.dx = 0
-                    self.rect.x -= self.knockback * 4
+                    self.rect.x -= self.knockback * 2
                 else:
                     self.rect.x -= self.knockback
                     self.update_action(2)  # 2:hit
@@ -839,13 +868,13 @@ class FighterPvP():
                     target.attack_cooldown = stunEnemy
                 else:             
                     # Target not backing up (hit)
-                    target.dx = -knockback_direction * self.knockback
+                    # target.dx = -knockback_direction * self.knockback
                     target.health -= damage / 20
                     target.attack_cooldown = stunEnemy
                 
               else: #Target Standing
                 if target.backUp:
-                   target.dx = -knockback_direction * self.knockback
+                  target.dx = -knockback_direction * self.knockback
                 elif target_at_edge:
                   # print("target at edge")
                   # Target at the edge
@@ -854,14 +883,14 @@ class FighterPvP():
                   target.attack_cooldown = stunEnemy
                 else:
                   # print ("target standing")
-                  target.dx = -knockback_direction * self.knockback
+                  # target.dx = -knockback_direction * self.knockback
                   target.health -= damage / 20
                   target.attack_cooldown = stunEnemy
 
             if target.jump:
                 # print("target jump")
                 # Apply upward force to the target
-                target.vel_y = -20  # Adjust the value to control the upward force
+                target.vel_y = -10  # Adjust the value to control the upward force
                 target.jump_hit = True
                 target.dx = 0
 
@@ -869,7 +898,7 @@ class FighterPvP():
                 if not target.crouch:
                     if not target.backUp:
                         # print("target jump")
-                        target.dx = -knockback_direction * self.knockback
+                        # target.dx = -knockback_direction * 10
                         target.health -= damage / 20
                         target.attack_cooldown = stunEnemy
                         
@@ -896,7 +925,7 @@ class FighterPvP():
                 else:             
                     # print("target not back up")
                     # Target not backing up (hit)
-                    target.dx = -knockback_direction * self.knockback
+                    # target.dx = -knockback_direction * self.knockback
                     target.health -= damage / 20
                     target.attack_cooldown = stunEnemy
               
@@ -914,7 +943,7 @@ class FighterPvP():
                 else:
                     # print("target not back up")
                     # Target not backing up (hit)
-                    target.dx = -knockback_direction * self.knockback
+                    # target.dx = -knockback_direction * self.knockback
                     target.health -= damage / 20
                     target.attack_cooldown = stunEnemy
     

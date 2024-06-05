@@ -44,6 +44,7 @@ class FighterPvAI():
     self.jump_hit = False
     self.jump_move_limit_MAIN = 1
     self.jump_move_limit = self.jump_move_limit_MAIN
+    self.jump_speed_boost = False
     
     self.reaction_frame = 1000/60 #ini dari ticks nya idk translasinya ke fps :V (jadi tiap 1600ticks, blablabla)
     self.last_count_update = pygame.time.get_ticks()
@@ -122,29 +123,43 @@ class FighterPvAI():
                     self.backUp = True
                 else:
                     self.backUp = False
-        #movement
-        if not self.crouch:  # Only allow movement when not crouching
-            if self.flip == False:
-                if key[pygame.K_a]:
-                    self.dx = -self.SPEED
-                    self.backUp = True
-                if key[pygame.K_d]:
-                    self.dx = self.SPEED
-                    self.running = True
-                    self.backUp = False
-            else:
-                if key[pygame.K_a]:
-                    self.dx = -self.SPEED
-                    self.running = True
-                    self.backUp = False
-                if key[pygame.K_d]:
-                    self.dx = self.SPEED
-                    self.backUp = True
+        
         #jump
         if key[pygame.K_w] and self.jump == False and self.crouch == False:
           self.vel_y = -30
           self.jump = True
           self.initial_flip = self.flip
+          self.jump_speed_boost = True
+        #movement
+        if not self.crouch:  # Only allow movement when not crouching
+          if self.flip == False:
+              if key[pygame.K_a]:
+                  if self.jump_speed_boost:
+                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = -self.SPEED
+                  self.backUp = True
+              if key[pygame.K_d]:
+                  if self.jump_speed_boost:
+                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = self.SPEED
+                  self.running = True
+                  self.backUp = False
+          else:
+              if key[pygame.K_a]:
+                  if self.jump_speed_boost:
+                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = -self.SPEED
+                  self.running = True
+                  self.backUp = False
+              if key[pygame.K_d]:
+                  if self.jump_speed_boost:
+                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = self.SPEED
+                  self.backUp = True
 
         #attack punch
         if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == False and self.crouch == False:
@@ -488,30 +503,43 @@ class FighterPvAI():
                     self.backUp = True
                 else:
                     self.backUp = False
-        #movement
-        if not self.crouch:  # Only allow movement when not crouching
-            if self.flip == False:
-                if self.keys["A"]:
-                    self.dx = -self.SPEED
-                    self.backUp = True
-                if self.keys["D"]:
-                    self.dx = self.SPEED
-                    self.running = True
-                    self.backUp = False
-            else:
-                if self.keys["A"]:
-                    self.dx = -self.SPEED
-                    self.running = True
-                    self.backUp = False
-                if self.keys["D"]:
-                    self.dx = self.SPEED
-                    self.backUp = True
         #jump            
         if self.keys["W"] and self.jump == False and self.crouch == False:
           self.vel_y = -30
           self.jump = True
           self.initial_flip = self.flip
-          
+          self.jump_speed_boost = True
+        #movement
+        if not self.crouch:  # Only allow movement when not crouching
+            if self.flip == False:
+                if self.keys["A"]:
+                    if self.jump_speed_boost:
+                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                    else:
+                        self.dx = -self.SPEED
+                    self.backUp = True
+                if self.keys["D"]:
+                    if self.jump_speed_boost:
+                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                    else:
+                        self.dx = self.SPEED
+                    self.running = True
+                    self.backUp = False
+            else:
+                if self.keys["A"]:
+                    if self.jump_speed_boost:
+                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                    else:
+                        self.dx = -self.SPEED
+                    self.running = True
+                    self.backUp = False
+                if self.keys["D"]:
+                    if self.jump_speed_boost:
+                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                    else:
+                        self.dx = self.SPEED
+                    self.backUp = True
+        
         #attack punch
         if (self.keys["R"] or self.keys["T"]) and self.jump == False and self.crouch == False:
           
@@ -652,15 +680,16 @@ class FighterPvAI():
       self.vel_y = 0
       self.jump = False
       self.dy = screen_height - 110 - self.rect.bottom
+      self.jump_speed_boost = False
     if self.rect.bottom + self.dy == screen_height - 110:
       #  print("GROUNDDD", self.player)
       self.jump_move_limit = self.jump_move_limit_MAIN
 
-    if self.jump and self.action == 3:
-        if self.initial_flip == False:
-            self.dx = self.SPEED * 2
-        else:
-            self.dx = -self.SPEED * 2
+    # if self.jump and self.action == 3:
+    #     if self.initial_flip == False:
+    #         self.dx = self.SPEED * 2
+    #     else:
+    #         self.dx = -self.SPEED * 2
     
     if not (self.jump and self.action == 3):
         if target.rect.centerx > self.rect.centerx:
@@ -731,7 +760,7 @@ class FighterPvAI():
                     self.update_action(25)
                 elif self.jump == True:
                     self.dx = 0
-                    self.rect.x += self.knockback * 4
+                    self.rect.x += self.knockback * 2
                 else:
                     self.rect.x += self.knockback
                     self.update_action(2)  # 2:hit
@@ -743,7 +772,7 @@ class FighterPvAI():
                     self.update_action(25)
                 elif self.jump == True:
                     self.dx = 0
-                    self.rect.x += self.knockback * 4
+                    self.rect.x += self.knockback * 2
                 else:
                     self.rect.x += self.knockback
                     self.update_action(2)  # 2:hit
@@ -756,7 +785,7 @@ class FighterPvAI():
                     self.update_action(25)
                 elif self.jump == True:
                     self.dx = 0
-                    self.rect.x -= self.knockback * 4
+                    self.rect.x -= self.knockback * 2
                 else:
                     self.rect.x -= self.knockback
                     self.update_action(2)  # 2:hit
@@ -768,7 +797,7 @@ class FighterPvAI():
                     self.update_action(25)
                 elif self.jump == True:
                     self.dx = 0
-                    self.rect.x -= self.knockback * 4
+                    self.rect.x -= self.knockback * 2
                 else:
                     self.rect.x -= self.knockback
                     self.update_action(2)  # 2:hit

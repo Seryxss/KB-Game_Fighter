@@ -43,6 +43,7 @@ class FighterAIvAI():
     self.jump_hit = False
     self.jump_move_limit_MAIN = 1
     self.jump_move_limit = self.jump_move_limit_MAIN
+    self.jump_speed_boost = False
 
   def load_images(self, sprite_sheet, animation_steps):
     #extract images from spritesheet
@@ -105,30 +106,44 @@ class FighterAIvAI():
                     self.backUp = True
                 else:
                     self.backUp = False
-        #movement
-        if not self.crouch:  # Only allow movement when not crouching
-            if self.flip == False:
-                if key[pygame.K_a]:
-                    self.dx = -self.SPEED
-                    self.backUp = True
-                if key[pygame.K_d]:
-                    self.dx = self.SPEED
-                    self.running = True
-                    self.backUp = False
-            else:
-                if key[pygame.K_a]:
-                    self.dx = -self.SPEED
-                    self.running = True
-                    self.backUp = False
-                if key[pygame.K_d]:
-                    self.dx = self.SPEED
-                    self.backUp = True
+        
         #jump
         if key[pygame.K_w] and self.jump == False and self.crouch == False:
           self.vel_y = -30
           self.jump = True
           self.initial_flip = self.flip
-
+          self.jump_speed_boost = True
+        #movement
+        if not self.crouch:  # Only allow movement when not crouching
+          if self.flip == False:
+              if key[pygame.K_a]:
+                  if self.jump_speed_boost:
+                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = -self.SPEED
+                  self.backUp = True
+              if key[pygame.K_d]:
+                  if self.jump_speed_boost:
+                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = self.SPEED
+                  self.running = True
+                  self.backUp = False
+          else:
+              if key[pygame.K_a]:
+                  if self.jump_speed_boost:
+                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = -self.SPEED
+                  self.running = True
+                  self.backUp = False
+              if key[pygame.K_d]:
+                  if self.jump_speed_boost:
+                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = self.SPEED
+                  self.backUp = True
+                  
         #attack punch
         if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == False and self.crouch == False:
           #determine which attack type was used
@@ -271,29 +286,44 @@ class FighterAIvAI():
                     self.backUp = True
                 else:
                     self.backUp = False
-        #movement
-        if not self.crouch:  # Only allow movement when not crouching
-            if self.flip == False:
-                if key[pygame.K_h]:
-                    self.dx = -self.SPEED
-                    self.backUp = True
-                if key[pygame.K_k]:
-                    self.dx = self.SPEED
-                    self.running = True
-                    self.backUp = False
-            else:
-                if key[pygame.K_h]:
-                    self.dx = -self.SPEED
-                    self.running = True
-                    self.backUp = False
-                if key[pygame.K_k]:
-                    self.dx = self.SPEED
-                    self.backUp = True
-        #jump            
+        
+        #jump
         if key[pygame.K_u] and self.jump == False and self.crouch == False:
           self.vel_y = -30
           self.jump = True
           self.initial_flip = self.flip
+          self.jump_speed_boost = True
+        #movement
+        if not self.crouch:  # Only allow movement when not crouching
+          if self.flip == False:
+              if key[pygame.K_h]:
+                  if self.jump_speed_boost:
+                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = -self.SPEED
+                  self.backUp = True
+              if key[pygame.K_k]:
+                  if self.jump_speed_boost:
+                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = self.SPEED
+                  self.running = True
+                  self.backUp = False
+          else:
+              if key[pygame.K_h]:
+                  if self.jump_speed_boost:
+                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = -self.SPEED
+                  self.running = True
+                  self.backUp = False
+              if key[pygame.K_k]:
+                  if self.jump_speed_boost:
+                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = self.SPEED
+                  self.backUp = True
+
           
         #attack punch
         if (key[pygame.K_o] or key[pygame.K_p]) and self.jump == False and self.crouch == False:
@@ -430,12 +460,12 @@ class FighterAIvAI():
       self.vel_y = 0
       self.jump = False
       self.dy = screen_height - 110 - self.rect.bottom
-
-    if self.jump and self.action == 3:
-        if self.initial_flip == False:
-            self.dx = self.SPEED * 2
-        else:
-            self.dx = -self.SPEED * 2
+      self.jump_speed_boost = False
+    # if self.jump and self.action == 3:
+    #     if self.initial_flip == False:
+    #         self.dx = self.SPEED * 2
+    #     else:
+    #         self.dx = -self.SPEED * 2
     
     if not (self.jump and self.action == 3):
         if target.rect.centerx > self.rect.centerx:
