@@ -41,6 +41,8 @@ class FighterPvP():
     self.offsetCrouch=[110,150]
     self.pauseHurtBox = 0
     self.jump_hit = False
+    self.jump_move_limit_MAIN = 1
+    self.jump_move_limit = self.jump_move_limit_MAIN
 
   def load_images(self, sprite_sheet, animation_steps):
     #extract images from spritesheet
@@ -147,27 +149,29 @@ class FighterPvP():
               self.attacking = True
               self.damage = 8
               
-              # print(self.attack)
+              # # print(self.attack)
             if key[pygame.K_t]:
               self.attack_type = 2
               self.attacking = True
               self.damage = 28
               
-              # print(self.attack)
+              # # print(self.attack)
           
         #attack while jumping
-        if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == True:
+        if (key[pygame.K_r] or key[pygame.K_t]) and self.jump == True and self.jump_move_limit >= 1:
           
           #determine which attack type was used
           if key[pygame.K_r]:
             self.attack_type = 9
             self.attacking = True
             self.damage = 12
+            self.jump_move_limit -=1
             
           if key[pygame.K_t]:
             self.attack_type = 10
             self.attacking = True
             self.damage = 26
+            self.jump_move_limit -=1
             
         #attack while crouching
         if (key[pygame.K_r] or key[pygame.K_t]) and self.crouch == True:
@@ -223,18 +227,20 @@ class FighterPvP():
               self.damage = 30
               
           #attack while jumping
-        if (key[pygame.K_f] or key[pygame.K_g]) and self.jump == True:
+        if (key[pygame.K_f] or key[pygame.K_g]) and self.jump == True and self.jump_move_limit >= 1:
           
           #determine which attack type was used
           if key[pygame.K_f]:
             self.attack_type = 11
             self.attacking = True
             self.damage = 14
+            self.jump_move_limit -=1
             
           if key[pygame.K_g]:
             self.attack_type = 12
             self.attacking = True
             self.damage = 30
+            self.jump_move_limit -=1
             
         #attack while crouching
         if (key[pygame.K_f] or key[pygame.K_g]) and self.crouch == True:
@@ -320,18 +326,20 @@ class FighterPvP():
               self.damage = 28
               
         #attack while jumping
-        if (key[pygame.K_o] or key[pygame.K_p]) and self.jump == True:
+        if (key[pygame.K_o] or key[pygame.K_p]) and self.jump == True and self.jump_move_limit >= 1:
           
           #determine which attack type was used
           if key[pygame.K_o]:
             self.attack_type = 9
             self.attacking = True
             self.damage = 12
+            self.jump_move_limit -=1
             
           if key[pygame.K_p]:
             self.attack_type = 10
             self.attacking = True
             self.damage = 26
+            self.jump_move_limit -=1
             
         #attack while crouching
         if (key[pygame.K_o] or key[pygame.K_p]) and self.crouch == True:
@@ -387,18 +395,20 @@ class FighterPvP():
               self.damage = 30
               
           #attack while jumping
-        if (key[pygame.K_l] or key[pygame.K_SEMICOLON]) and self.jump == True:
+        if (key[pygame.K_l] or key[pygame.K_SEMICOLON]) and self.jump == True and self.jump_move_limit >= 1:
           
           #determine which attack type was used
           if key[pygame.K_l]:
             self.attack_type = 11
             self.attacking = True
             self.damage = 14
+            self.jump_move_limit -=1
             
           if key[pygame.K_SEMICOLON]:
             self.attack_type = 12
             self.attacking = True
             self.damage = 30
+            self.jump_move_limit -=1
             
         #attack while crouching
         if (key[pygame.K_l] or key[pygame.K_SEMICOLON]) and self.crouch == True:
@@ -428,6 +438,9 @@ class FighterPvP():
       self.vel_y = 0
       self.jump = False
       self.dy = screen_height - 110 - self.rect.bottom
+    if self.rect.bottom + self.dy == screen_height - 110:
+      #  # print("GROUNDDD", self.player)
+      self.jump_move_limit = self.jump_move_limit_MAIN
 
     if self.jump and self.action == 3:
         if self.initial_flip == False:
@@ -455,7 +468,7 @@ class FighterPvP():
     
     if self.crouch == True:
       #self.vel_y = 500
-      #print(self.rect.y)
+      ## print(self.rect.y)
       self.rect.y=390
 
     #ensure players face each other
@@ -601,12 +614,12 @@ class FighterPvP():
         self.rect.y = 330
 
     # if(self.action != 0):
-    #   print("damage: ", self.damage)
-      # print("action:  ", self.action)
-      # print("frame_index:  ", self.frame_index)
+    #   # print("damage: ", self.damage)
+      # # print("action:  ", self.action)
+      # # print("frame_index:  ", self.frame_index)
   
     # if self.attack_cooldown != 0:
-    #   print( )
+    #   # print( )
     # stunEnemy berdasarkan collision, nanti custom tambah berdasarkan frame kenanya
     if (self.action == 6): ############################ lp
       if(self.frame_index == 0 ):
@@ -806,7 +819,7 @@ class FighterPvP():
             knockback_direction = -1 if self.flip else 1
 
             if self.intialCrouch:
-              print("player Crouch")
+              # print("player Crouch")
               #Cek Edge
               target_at_edge = False
               if target.rect.left <= 0 and knockback_direction == -1:
@@ -814,7 +827,7 @@ class FighterPvP():
               elif target.rect.right >= self.screen_width and knockback_direction == 1:
                 target_at_edge = True
               if target.crouch:
-                print("target Crouch")
+                # print("target Crouch")
                   #Cek Backup
                 if target.backUp:         
                     # Target backing up (blocking)
@@ -834,19 +847,19 @@ class FighterPvP():
                 if target.backUp:
                    target.dx = -knockback_direction * self.knockback
                 elif target_at_edge:
-                  print("target at edge")
+                  # print("target at edge")
                   # Target at the edge
                   self.knockback_frames = 10
                   target.health -= damage / 20
                   target.attack_cooldown = stunEnemy
                 else:
-                  print ("target standing")
+                  # print ("target standing")
                   target.dx = -knockback_direction * self.knockback
                   target.health -= damage / 20
                   target.attack_cooldown = stunEnemy
 
             if target.jump:
-                print("target jump")
+                # print("target jump")
                 # Apply upward force to the target
                 target.vel_y = -20  # Adjust the value to control the upward force
                 target.jump_hit = True
@@ -855,13 +868,13 @@ class FighterPvP():
             if not self.intialCrouch:
                 if not target.crouch:
                     if not target.backUp:
-                        print("target jump")
+                        # print("target jump")
                         target.dx = -knockback_direction * self.knockback
                         target.health -= damage / 20
                         target.attack_cooldown = stunEnemy
                         
             if not self.intialCrouch: #PlayerStanding
-              print ("player standing")
+              # print ("player standing")
               #Cek Edge
               target_at_edge = False
               if target.rect.left <= 0 and knockback_direction == -1:
@@ -869,19 +882,19 @@ class FighterPvP():
               elif target.rect.right >= self.screen_width and knockback_direction == 1:
                   target_at_edge = True
               if target.crouch: #Target Crouching
-                print ("target crouching")
+                # print ("target crouching")
                 if target.backUp:         
-                    print("target back up")
+                    # print("target back up")
                     # Target backing up (blocking)
                     self.knockback_frames = 10  # Set knockback frames for the attacking player
                 elif target_at_edge:
-                    print("target at edge")
+                    # print("target at edge")
                     # Target at the edge
                     self.knockback_frames = 10
                     target.health -= damage / 20
                     target.attack_cooldown = stunEnemy
                 else:             
-                    print("target not back up")
+                    # print("target not back up")
                     # Target not backing up (hit)
                     target.dx = -knockback_direction * self.knockback
                     target.health -= damage / 20
@@ -889,17 +902,17 @@ class FighterPvP():
               
               else: #Target Standing
                 if target.backUp:
-                    print("target back up")
+                    # print("target back up")
                     # Target backing up (blocking)
                     self.knockback_frames = 10  # Set knockback frames for the attacking player
                 elif target_at_edge:
-                    print("target at edge")
+                    # print("target at edge")
                     # Target at the edge
                     self.knockback_frames = 10
                     target.health -= damage / 20
                     target.attack_cooldown = stunEnemy
                 else:
-                    print("target not back up")
+                    # print("target not back up")
                     # Target not backing up (hit)
                     target.dx = -knockback_direction * self.knockback
                     target.health -= damage / 20

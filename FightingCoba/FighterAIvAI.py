@@ -41,6 +41,8 @@ class FighterAIvAI():
     self.offsetCrouch=[110,150]
     self.pauseHurtBox = 0
     self.jump_hit = False
+    self.jump_move_limit_MAIN = 1
+    self.jump_move_limit = self.jump_move_limit_MAIN
 
   def load_images(self, sprite_sheet, animation_steps):
     #extract images from spritesheet
