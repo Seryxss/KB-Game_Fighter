@@ -44,6 +44,7 @@ class FighterPvP():
     self.jump_move_limit_MAIN = 1
     self.jump_move_limit = self.jump_move_limit_MAIN
     self.jump_speed_boost = False
+    self.screen_height = None
 
   def load_images(self, sprite_sheet, animation_steps):
     #extract images from spritesheet
@@ -61,6 +62,7 @@ class FighterPvP():
     if self.target == None and self.surface == None:
       self.target = target
       self.surface = surface
+      self.screen_height = screen_height
 
     self.collision_rect.x = self.rect.x
     self.collision_rect.y = self.rect.y
@@ -470,6 +472,8 @@ class FighterPvP():
     if self.rect.bottom + self.dy == screen_height - 110:
       #  # print("GROUNDDD", self.player)
       self.jump_move_limit = self.jump_move_limit_MAIN
+      
+      
 
     # if self.jump and self.action == 3:
     #     if self.initial_flip == False:
@@ -743,18 +747,24 @@ class FighterPvP():
       if(self.frame_index >= 2):
         attacking_rect = pygame.Rect(self.rect.centerx - (0.1 * self.rect.width * 2*(self.flip-0.5)) - (0.75 * self.flip*self.rect.width), self.rect.y+10, 0.75 * self.rect.width, self.rect.height*0.3)
         self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=10, cooldownSelf=0)
+      if self.rect.bottom + self.dy == self.screen_height - 110:
+          self.frame_index = len(self.animation_list[self.action])-1
     elif (self.action == 19): ########################### lompat hp
       if(self.frame_index == 0 ):
         self.attack_sound.play()
       if(self.frame_index >= 4 and self.frame_index < 12):
         attacking_rect = pygame.Rect(self.rect.centerx - (0.05 * self.rect.width * 2*(self.flip-0.5)) - (1 * self.flip*self.rect.width), self.rect.y+50, 1 * self.rect.width, self.rect.height*0.15)
         self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=10, cooldownSelf=0)
+      if self.rect.bottom + self.dy == self.screen_height - 110:
+          self.frame_index = len(self.animation_list[self.action])-1
     elif (self.action == 20): ########################### lompat lk
       if(self.frame_index == 0 ):
         self.attack_sound.play()
       if(self.frame_index >= 3):
         attacking_rect = pygame.Rect(self.rect.centerx - (-0.8 * self.rect.width * 2*(self.flip-0.5)) - (1.7 * self.flip*self.rect.width), self.rect.y+5, 1.7 * self.rect.width, self.rect.height*0.4)
         self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=10, cooldownSelf=0)
+      if self.rect.bottom + self.dy == self.screen_height - 110:
+          self.frame_index = len(self.animation_list[self.action])-1
     elif (self.action == 21): ########################### lompat hk
       if(self.frame_index == 0):
         self.attack_sound.play()
@@ -764,6 +774,8 @@ class FighterPvP():
       if(self.frame_index >= 8 and self.frame_index < 15):
         attacking_rect = pygame.Rect(self.rect.centerx - (-0.5 * self.rect.width * 2*(self.flip-0.5)) - (1.95 * self.flip*self.rect.width), self.rect.y+20, 1.95 * self.rect.width, self.rect.height*0.5)
         self.attack(self.target, self.surface, self.damage, attacking_rect, stunEnemy=10, cooldownSelf=0)
+      if self.rect.bottom + self.dy == self.screen_height - 110:
+          self.frame_index = len(self.animation_list[self.action])-1
     elif (self.action == 22): ########################### shoryuken
       if(self.frame_index == 5):
         if not self.flip:

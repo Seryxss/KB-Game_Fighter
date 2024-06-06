@@ -207,7 +207,7 @@ def main_menu():
         PvAI_Button = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(700, 320), 
                             text_input="P vs AI", font=get_font(40), base_color="#d7fcd4", hovering_color="Black")
         AIvAI_Button = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(300, 450), 
-                            text_input="coming soon!", font=get_font(30), base_color="#d7fcd4", hovering_color="Black")
+                            text_input="Coming Soon!", font=get_font(27), base_color="#d7fcd4", hovering_color="Black")
         # OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400), 
         #                     text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
         QUIT_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(700, 450), 
@@ -228,8 +228,8 @@ def main_menu():
                     play(1)
                 if PvAI_Button.checkForInput(MENU_MOUSE_POS):
                     play(2)
-                # if AIvAI_Button.checkForInput(MENU_MOUSE_POS):
-                #     play(3)
+                if AIvAI_Button.checkForInput(MENU_MOUSE_POS):
+                    play(3)
                 # if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                 #     options()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
