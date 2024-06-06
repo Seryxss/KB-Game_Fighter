@@ -534,6 +534,8 @@ class FighterPvP():
     if self.health <= 0:
         self.health = 0
         self.alive = False
+        # self.offset = self.offsetStand
+        # self.target.offset = self.target.offsetStand
         self.update_action(1)  # 1:death
         self.target.update_action(24)  # victor
     elif self.hit == True:
