@@ -112,7 +112,7 @@ class FighterAIvAI():
           self.vel_y = -30
           self.jump = True
           self.initial_flip = self.flip
-          self.jump_speed_boost = True
+          #self.jump_speed_boost = True
         #movement
         if not self.crouch:  # Only allow movement when not crouching
           if self.flip == False:
@@ -292,7 +292,7 @@ class FighterAIvAI():
           self.vel_y = -30
           self.jump = True
           self.initial_flip = self.flip
-          self.jump_speed_boost = True
+          #self.jump_speed_boost = True
         #movement
         if not self.crouch:  # Only allow movement when not crouching
           if self.flip == False:
@@ -536,7 +536,7 @@ class FighterAIvAI():
                     self.update_action(25)
                 elif self.jump == True:
                     self.dx = 0
-                    self.rect.x += self.knockback * 4
+                    self.rect.x += self.knockback * 2.5
                 else:
                     self.rect.x += self.knockback
                     self.update_action(2)  # 2:hit
@@ -548,7 +548,7 @@ class FighterAIvAI():
                     self.update_action(25)
                 elif self.jump == True:
                     self.dx = 0
-                    self.rect.x += self.knockback * 4
+                    self.rect.x += self.knockback * 2.5
                 else:
                     self.rect.x += self.knockback
                     self.update_action(2)  # 2:hit
@@ -561,7 +561,7 @@ class FighterAIvAI():
                     self.update_action(25)
                 elif self.jump == True:
                     self.dx = 0
-                    self.rect.x -= self.knockback * 4
+                    self.rect.x -= self.knockback * 2.5
                 else:
                     self.rect.x -= self.knockback
                     self.update_action(2)  # 2:hit
@@ -573,7 +573,7 @@ class FighterAIvAI():
                     self.update_action(25)
                 elif self.jump == True:
                     self.dx = 0
-                    self.rect.x -= self.knockback * 4
+                    self.rect.x -= self.knockback * 2.5
                 else:
                     self.rect.x -= self.knockback
                     self.update_action(2)  # 2:hit
