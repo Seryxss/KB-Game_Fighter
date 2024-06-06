@@ -2,6 +2,7 @@ import pygame, sys
 from pygame import mixer
 from FighterPvP import FighterPvP
 from FighterPvAI import FighterPvAI
+from FighterPvAIRL import FighterPvAIRL
 from FighterAIvAI import FighterAIvAI
 from button import Button
 
@@ -104,8 +105,8 @@ def play(mode): #mode = 1 for PvP, mode = 2 for PvAI, mode = 3 for AIvAI
     fighter_1 = FighterPvAI(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
     fighter_2 = FighterPvAI(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
   if mode == 3:
-    fighter_1 = FighterAIvAI(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
-    fighter_2 = FighterAIvAI(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
+    fighter_1 = FighterPvAIRL(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+    fighter_2 = FighterPvAIRL(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
 
   global plays
   global score
@@ -164,8 +165,8 @@ def play(mode): #mode = 1 for PvP, mode = 2 for PvAI, mode = 3 for AIvAI
         fighter_1 = FighterPvAI(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
         fighter_2 = FighterPvAI(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
       if mode == 3:
-        fighter_1 = FighterAIvAI(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
-        fighter_2 = FighterAIvAI(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
+        fighter_1 = FighterPvAIRL(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+        fighter_2 = FighterPvAIRL(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
 
     # print(score)
     if score[0] == 2 or score[1] == 2:
@@ -203,18 +204,18 @@ def main_menu():
         MENU_RECT = MENU_TEXT.get_rect(center=(510, 150))
 
         PvP_Button = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(300, 320), 
-                            text_input="P vs P", font=get_font(40), base_color="#d7fcd4", hovering_color="Black")
+                            text_input="P vs P", font=get_font(35), base_color="#d7fcd4", hovering_color="Black")
         PvAI_Button = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(700, 320), 
-                            text_input="P vs AI", font=get_font(40), base_color="#d7fcd4", hovering_color="Black")
-        AIvAI_Button = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(300, 450), 
-                            text_input="Coming Soon!", font=get_font(27), base_color="#d7fcd4", hovering_color="Black")
+                            text_input="P vs AIBT", font=get_font(35), base_color="#d7fcd4", hovering_color="Black")
+        FighterPvAIRL_Button = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(300, 450), 
+                            text_input="P vs AIRL", font=get_font(35), base_color="#d7fcd4", hovering_color="Black")
         # OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400), 
         #                     text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
         QUIT_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(700, 450), 
-                            text_input="Quit", font=get_font(40), base_color="#d7fcd4", hovering_color="Black")
+                            text_input="Quit", font=get_font(35), base_color="#d7fcd4", hovering_color="Black")
         screen.blit(MENU_TEXT, MENU_RECT)
 
-        for button in [PvP_Button, PvAI_Button, AIvAI_Button, QUIT_BUTTON]:
+        for button in [PvP_Button, PvAI_Button, FighterPvAIRL_Button, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(screen)
         
@@ -228,7 +229,7 @@ def main_menu():
                     play(1)
                 if PvAI_Button.checkForInput(MENU_MOUSE_POS):
                     play(2)
-                if AIvAI_Button.checkForInput(MENU_MOUSE_POS):
+                if FighterPvAIRL_Button.checkForInput(MENU_MOUSE_POS):
                     play(3)
                 # if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                 #     options()
