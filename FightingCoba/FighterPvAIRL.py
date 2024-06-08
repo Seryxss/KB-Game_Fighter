@@ -52,7 +52,6 @@ class FighterPvAIRL():
                "A" : False,
                "S" : False,
                "D" : False,
-               "SPACE" : False,
                "R" : False,
                "T" : False,
                "F" : False,

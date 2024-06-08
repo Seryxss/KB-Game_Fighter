@@ -3,7 +3,7 @@ import math
 import random
 
 class FighterAIRLvAIBT():
-  def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound, screen_width):
+  def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound, screen_width, screen_height, surface):
     self.upward_force = 20
     self.floating_duration = 40
     self.player = player
@@ -33,7 +33,8 @@ class FighterAIRLvAIBT():
     self.health = 144.0
     self.alive = True
     self.target = None
-    self.surface = None
+    self.surface = surface
+    self.screen_height = screen_height
     self.damage = 0
     self.knockback = 3
     self.block = False
@@ -45,7 +46,6 @@ class FighterAIRLvAIBT():
     self.jump_move_limit_MAIN = 1
     self.jump_move_limit = self.jump_move_limit_MAIN
     self.jump_speed_boost = False
-    self.screen_height = None
     
     self.reaction_frame = 1000/60 #ini dari ticks nya idk translasinya ke fps :V (jadi tiap 1600ticks, blablabla)
     self.last_count_update = pygame.time.get_ticks()
@@ -65,7 +65,6 @@ class FighterAIRLvAIBT():
                "A" : False,
                "S" : False,
                "D" : False,
-               "SPACE" : False,
                "R" : False,
                "T" : False,
                "F" : False,
@@ -86,239 +85,25 @@ class FighterAIRLvAIBT():
         temp_img_list.append(pygame.transform.scale(temp_img, (self.size * self.image_scale, self.size * self.image_scale)))
       animation_list.append(temp_img_list)
     return animation_list
+  
+  def update_keys_from_action(self, action, target):
+        # Update keys based on the action from the DQN agent
+        self.keys = {key: False for key in self.keys}
+        if action == 0:  # No action
+            pass
+        elif action == 1:  # Move left
+            self.keys["A"] = True
+        elif action == 2:  # Move right
+            self.keys["D"] = True
+        elif action == 3:  # Jump
+            self.keys["W"] = True
+        elif action == 4:  # Attack
+            self.keys["R"] = True
+        elif action == 5:  # Special attack
+            self.keys["C"] = True
 
-
-  def move(self, screen_width, screen_height, surface, target, round_over):
-    if self.target == None and self.surface == None:
-      self.target = target
-      self.surface = surface
-      self.screen_height = screen_height
-
-    self.collision_rect.x = self.rect.x
-    self.collision_rect.y = self.rect.y
-    self.SPEED = 3
-    self.GRAVITY = 2
-    self.dx = 0
-    self.dy = 0
-    self.running = False
-    self.backUp = False
-    self.crouch = False
-    self.attack_type = 0
-
-    #get keypresses
-    key = pygame.key.get_pressed()
-
-    # Check for collision with the target player
-    if self.collision_rect.colliderect(target.collision_rect):
-    # Resolve collision by separating the players
-      if self.rect.centerx < target.rect.centerx:
-        self.rect.right = target.rect.left
-        self.collision_rect.right = target.collision_rect.left
-      else:
-        self.rect.left = target.rect.right
-        self.collision_rect.left = target.collision_rect.right
-
-    #can only perform other actions if not currently attacking
-    if self.attacking == False and self.alive == True and round_over == False and self.attack_cooldown == 0:
-      distance = math.sqrt((self.rect.centerx - target.rect.centerx)**2 + (self.rect.centery - target.rect.centery)**2)
-      
-      #check player 1 controls
-      if (pygame.time.get_ticks() - self.last_count_update) >= self.reaction_frame:
-        self.last_count_update = pygame.time.get_ticks()
-        # self.keysRL["R"] = True
-      else:
-         self.keysRL["SPACE"] = False
-         self.keysRL["R"] = False
-         self.keysRL["T"] = False
-         self.keysRL["F"] = False
-         self.keysRL["G"] = False
-         self.keysRL["C"] = False
-         self.keysRL["V"] = False
-      self.keysRL["D"] = True
-      
-      if self.player == 1 and self.action != 2:
-        #crouch
-        if self.keysRL["S"] and self.crouch == False and self.jump == False:
-            self.crouch = True
-            self.intialCrouch = True
-            self.dx = 0  # Set dx to 0 when crouching
-            if self.flip == False:
-                if self.keysRL["A"]:  # Check if moving backward and not already backing up
-                    self.backUp = True
-                else:
-                    self.backUp = False
-            else:
-                if self.keysRL["D"]:  # Check if moving backward and not already backing up
-                    self.backUp = True
-                else:
-                    self.backUp = False
-        
-        #jump
-        if self.keysRL["W"] and self.jump == False and self.crouch == False:
-          self.vel_y = -30
-          self.jump = True
-          self.initial_flip = self.flip
-          # self.jump_speed_boost = True
-        #movement
-        if not self.crouch:  # Only allow movement when not crouching
-          if self.flip == False:
-              if self.keysRL["A"]:
-                  if self.jump_speed_boost:
-                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
-                  else:
-                      self.dx = -self.SPEED
-                  self.backUp = True
-              if self.keysRL["D"]:
-                  if self.jump_speed_boost:
-                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
-                  else:
-                      self.dx = self.SPEED
-                  self.running = True
-                  self.backUp = False
-          else:
-              if self.keysRL["A"]:
-                  if self.jump_speed_boost:
-                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
-                  else:
-                      self.dx = -self.SPEED
-                  self.running = True
-                  self.backUp = False
-              if self.keysRL["D"]:
-                  if self.jump_speed_boost:
-                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
-                  else:
-                      self.dx = self.SPEED
-                  self.backUp = True
-
-        #attack punch
-        if (self.keysRL["R"] or self.keysRL["T"]) and self.jump == False and self.crouch == False:
-          #determine which attack type was used
-          if distance < 80:
-            if self.keysRL["R"]:
-              self.attack_type = 13
-              self.attacking = True
-              self.damage = 8
-              
-            if self.keysRL["T"]:
-              self.attack_type = 14
-              self.attacking = True
-              self.damage = 28
-              
-          else :  
-            if self.keysRL["R"]:
-              self.attack_type = 1
-              self.attacking = True
-              self.damage = 8
-              
-              # print(self.attack)
-            if self.keysRL["T"]:
-              self.attack_type = 2
-              self.attacking = True
-              self.damage = 28
-              
-              # print(self.attack)
-          
-        #attack while jumping
-        if (self.keysRL["R"] or self.keysRL["T"]) and self.jump == True and self.jump_move_limit >= 1:
-          
-          #determine which attack type was used
-          if self.keysRL["R"]:
-            self.attack_type = 9
-            self.attacking = True
-            self.damage = 12
-            self.jump_move_limit -=1
-            
-          if self.keysRL["T"]:
-            self.attack_type = 10
-            self.attacking = True
-            self.damage = 26
-            self.jump_move_limit -=1
-            
-        #attack while crouching
-        if (self.keysRL["R"] or self.keysRL["T"]) and self.crouch == True:
-          
-          #determine which attack type was used
-          if self.keysRL["R"]:
-            self.attack_type = 5
-            self.attacking = True
-            self.damage = 8
-            
-          if self.keysRL["T"]:
-            self.attack_type = 6  
-            self.attacking = True
-            self.damage = 28
-              
-        # special attack
-        if self.keysRL["C"] and self.jump == False and self.crouch == False :
-          
-          self.attack_type = 17
-          self.attacking = True
-          self.damage = 24
-          
-        if self.keysRL["V"]  and self.jump == False and self.crouch == False:
-          
-          self.attack_type = 18
-          self.attacking = True
-          self.damage = 32
-          
-        #attack kick
-        if (self.keysRL["F"] or self.keysRL["G"]) and self.jump == False and self.crouch == False:
-          
-          #determine which attack type was used
-          if distance < 80:
-            if self.keysRL["F"]:
-              self.attack_type = 15
-              self.attacking = True
-              self.damage = 12
-              
-            if self.keysRL["G"]:
-              self.attack_type = 16
-              self.attacking = True
-              self.damage = 28
-              
-          else : 
-            if self.keysRL["F"]:
-              self.attack_type = 3
-              self.attacking = True
-              self.damage = 14
-              
-            if self.keysRL["G"]:
-              self.attack_type = 4
-              self.attacking = True
-              self.damage = 30
-              
-          #attack while jumping
-        if (self.keysRL["F"] or self.keysRL["G"]) and self.jump == True and self.jump_move_limit >= 1:
-          
-          #determine which attack type was used
-          if self.keysRL["F"]:
-            self.attack_type = 11
-            self.attacking = True
-            self.damage = 14
-            self.jump_move_limit -=1
-            
-          if self.keysRL["G"]:
-            self.attack_type = 12
-            self.attacking = True
-            self.damage = 30
-            self.jump_move_limit -=1
-            
-        #attack while crouching
-        if (self.keysRL["F"] or self.keysRL["G"]) and self.crouch == True:
-          
-          #determine which attack type was used
-          if self.keysRL["F"]:
-            self.attack_type = 7
-            self.attacking = True
-            self.damage = 8
-            
-          if self.keysRL["G"]:
-            self.attack_type = 8  
-            self.attacking = True  
-            self.damage = 26
-      
-      ###############TEMPAT AI BEHA#######################
-      if (pygame.time.get_ticks() - self.last_count_update) >= self.next_action*self.reaction_frame:
+  def update_keys_from_aibt(self, target):
+    if (pygame.time.get_ticks() - self.last_count_update) >= self.next_action*self.reaction_frame:
         self.next_action = random.randint(6,10)
         choice = random.randint(1,1000)
         distance = abs(self.rect.centerx - target.rect.centerx)
@@ -512,12 +297,274 @@ class FighterAIRLvAIBT():
               elif choice in range(881,940):
                 self.keys["V"]=True
 
-      
-      ####################################check player 2 controls################################################################
+  def move(self, target, action=None):
+      if self.target is None and self.surface is None:
+          self.target = target
 
-      if self.player == 2 and self.action != 2:
-        distance = math.sqrt((self.rect.centerx - target.rect.centerx)**2 + (self.rect.centery - target.rect.centery)**2)
-        #crouch
+      self.collision_rect.x = self.rect.x
+      self.collision_rect.y = self.rect.y
+      self.SPEED = 3
+      self.GRAVITY = 2
+      self.dx = 0
+      self.dy = 0
+      self.running = False
+      self.backUp = False
+      self.crouch = False
+      self.attack_type = 0
+
+      # Update keys based on the action or AIBT logic
+      if action is not None:
+          self.update_keys_from_action(action, target)
+      else:
+          self.update_keys_from_aibt(target)
+
+      # Check for collision with the target player
+      if self.collision_rect.colliderect(target.collision_rect):
+          # Resolve collision by separating the players
+          if self.rect.centerx < target.rect.centerx:
+              self.rect.right = target.rect.left
+              self.collision_rect.right = target.collision_rect.left
+          else:
+              self.rect.left = target.rect.right
+              self.collision_rect.left = target.collision_rect.right
+
+      # Can only perform other actions if not currently attacking
+      if not self.attacking and self.alive and self.attack_cooldown == 0:
+          distance = math.sqrt((self.rect.centerx - target.rect.centerx) ** 2 + (self.rect.centery - target.rect.centery) ** 2)
+          # Check player 1 controls
+          if (pygame.time.get_ticks() - self.last_count_update) >= self.reaction_frame:
+              self.last_count_update = pygame.time.get_ticks()
+              self.keysRL = {key: False for key in self.keysRL}
+              self.keysRL["D"] = True
+          else:
+              self.keysRL["R"] = False
+              self.keysRL["T"] = False
+              self.keysRL["F"] = False
+              self.keysRL["G"] = False
+              self.keysRL["C"] = False
+              self.keysRL["V"] = False
+
+          if self.player == 1 and self.action != 2:
+              self.handle_player1_controls(distance)
+
+          if self.player == 2 and self.action != 2:
+              self.handle_player2_controls(distance)
+
+      # Apply gravity
+      self.vel_y += self.GRAVITY
+      self.dy += self.vel_y
+
+      # Ensure player stays on screen
+      if self.rect.left + self.dx < 0:
+          self.dx = -self.rect.left
+      if self.rect.right + self.dx > self.screen_width:
+          self.dx = self.screen_width - self.rect.right
+      if self.rect.bottom + self.dy > self.screen_height - 110:
+          self.vel_y = 0
+          self.jump = False
+          self.dy = self.screen_height - 110 - self.rect.bottom
+          self.jump_speed_boost = False
+      if self.rect.bottom + self.dy == self.screen_height - 110:
+          self.jump_move_limit = self.jump_move_limit_MAIN
+      
+      if not (self.jump and self.action == 3):
+        if target.rect.centerx > self.rect.centerx:
+            self.flip = False
+        else:
+            self.flip = True
+
+    # Apply gravity and downward movement for the target if it was hit while jumping
+      if target.jump_hit:
+        target.vel_y += target.GRAVITY
+        target.dy += target.vel_y
+
+        # Reset the jump_hit flag when the target lands
+        if target.rect.bottom + target.dy > self.screen_height - 110:
+            target.vel_y = 0
+            target.jump = False
+            target.dy = self.screen_height - 110 - target.rect.bottom
+            target.jump_hit = False
+      # Update player direction based on target position
+      if target.rect.centerx > self.rect.centerx:
+          self.flip = False
+      else:
+          self.flip = True
+      
+      if self.crouch == True:
+      #self.vel_y = 500
+      #print(self.rect.y)
+        self.rect.y=390
+
+
+      # Apply attack cooldown
+      if self.attack_cooldown > 0:
+          self.attack_cooldown -= 1
+
+      # Reset dx if the action is jump
+      if self.action == 3 and self.frame_index == 0:
+          self.dx = 0
+
+      # Apply knockback
+      if self.knockback_frames > 0:
+          knockback_direction = -1 if self.flip else 1
+          self.dx = -knockback_direction * self.knockback
+          self.knockback_frames -= 1
+
+      # Update player position
+      self.rect.x += self.dx
+      self.rect.y += self.dy
+
+  def handle_player1_controls(self, distance):
+      # Crouch
+      if self.keysRL["S"] and not self.crouch and not self.jump:
+          self.crouch = True
+          self.intialCrouch = True
+          self.dx = 0  # Set dx to 0 when crouching
+          if self.flip:
+              if self.keysRL["D"]:  # Check if moving backward and not already backing up
+                  self.backUp = True
+          else:
+              if self.keysRL["A"]:  # Check if moving backward and not already backing up
+                  self.backUp = True
+
+      # Jump
+      if self.keysRL["W"] and not self.jump and not self.crouch:
+          self.vel_y = -30
+          self.jump = True
+          self.initial_flip = self.flip
+
+      # Movement
+      if not self.crouch:  # Only allow movement when not crouching
+          if self.flip:
+              if self.keysRL["A"]:
+                  if self.jump_speed_boost:
+                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = -self.SPEED
+                  self.backUp = True
+              if self.keysRL["D"]:
+                  if self.jump_speed_boost:
+                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = self.SPEED
+                  self.running = True
+                  self.backUp = False
+          else:
+              if self.keysRL["A"]:
+                  if self.jump_speed_boost:
+                      self.dx = -self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = -self.SPEED
+                  self.running = True
+                  self.backUp = False
+              if self.keysRL["D"]:
+                  if self.jump_speed_boost:
+                      self.dx = self.SPEED * 2.5  # Increase the horizontal speed when jumping
+                  else:
+                      self.dx = self.SPEED
+                  self.backUp = True
+
+      # Attack punch
+      if (self.keysRL["R"] or self.keysRL["T"]) and not self.jump and not self.crouch:
+          if distance < 80:
+              if self.keysRL["R"]:
+                  self.attack_type = 13
+                  self.attacking = True
+                  self.damage = 8
+              if self.keysRL["T"]:
+                  self.attack_type = 14
+                  self.attacking = True
+                  self.damage = 28
+          else:
+              if self.keysRL["R"]:
+                  self.attack_type = 1
+                  self.attacking = True
+                  self.damage = 8
+              if self.keysRL["T"]:
+                  self.attack_type = 2
+                  self.attacking = True
+                  self.damage = 28
+
+      # Attack while jumping
+      if (self.keysRL["R"] or self.keysRL["T"]) and self.jump and self.jump_move_limit >= 1:
+          if self.keysRL["R"]:
+              self.attack_type = 9
+              self.attacking = True
+              self.damage = 12
+              self.jump_move_limit -= 1
+          if self.keysRL["T"]:
+              self.attack_type = 10
+              self.attacking = True
+              self.damage = 26
+              self.jump_move_limit -= 1
+
+      # Attack while crouching
+      if (self.keysRL["R"] or self.keysRL["T"]) and self.crouch:
+          if self.keysRL["R"]:
+              self.attack_type = 5
+              self.attacking = True
+              self.damage = 8
+          if self.keysRL["T"]:
+              self.attack_type = 6
+              self.attacking = True
+              self.damage = 28
+
+      # Special attack
+      if self.keysRL["C"] and not self.jump and not self.crouch:
+          self.attack_type = 17
+          self.attacking = True
+          self.damage = 24
+      if self.keysRL["V"] and not self.jump and not self.crouch:
+          self.attack_type = 18
+          self.attacking = True
+          self.damage = 32
+
+      # Attack kick
+      if (self.keysRL["F"] or self.keysRL["G"]) and not self.jump and not self.crouch:
+          if distance < 80:
+              if self.keysRL["F"]:
+                  self.attack_type = 15
+                  self.attacking = True
+                  self.damage = 12
+              if self.keysRL["G"]:
+                  self.attack_type = 16
+                  self.attacking = True
+                  self.damage = 28
+          else:
+              if self.keysRL["F"]:
+                  self.attack_type = 3
+                  self.attacking = True
+                  self.damage = 14
+              if self.keysRL["G"]:
+                  self.attack_type = 4
+                  self.attacking = True
+                  self.damage = 30
+
+      # Attack while jumping
+      if (self.keysRL["F"] or self.keysRL["G"]) and self.jump and self.jump_move_limit >= 1:
+          if self.keysRL["F"]:
+              self.attack_type = 11
+              self.attacking = True
+              self.damage = 14
+              self.jump_move_limit -= 1
+          if self.keysRL["G"]:
+              self.attack_type = 12
+              self.attacking = True
+              self.damage = 30
+              self.jump_move_limit -= 1
+
+      # Attack while crouching
+      if (self.keysRL["F"] or self.keysRL["G"]) and self.crouch:
+          if self.keysRL["F"]:
+              self.attack_type = 7
+              self.attacking = True
+              self.damage = 8
+          if self.keysRL["G"]:
+              self.attack_type = 8
+              self.attacking = True
+              self.damage = 26
+
+  def handle_player2_controls(self, distance):
         if self.keys["S"] and self.crouch == False and self.jump == False:
             self.crouch = True
             self.intialCrouch = True
@@ -693,79 +740,6 @@ class FighterAIRLvAIBT():
             self.attack_type = 8
             self.attacking = True
             self.damage = 26
-            
-    ###########################################################################################################################
-
-    #apply gravity
-    self.vel_y += self.GRAVITY
-    self.dy += self.vel_y
-
-    #ensure player stays on screen
-    if self.rect.left + self.dx < 0:
-      self.dx = -self.rect.left
-    if self.rect.right + self.dx > screen_width:
-      self.dx = screen_width - self.rect.right
-    if self.rect.bottom + self.dy > screen_height - 110:
-      self.vel_y = 0
-      self.jump = False
-      self.dy = screen_height - 110 - self.rect.bottom
-      self.jump_speed_boost = False
-    if self.rect.bottom + self.dy == screen_height - 110:
-      #  print("GROUNDDD", self.player)
-      self.jump_move_limit = self.jump_move_limit_MAIN
-
-    # if self.jump and self.action == 3:
-    #     if self.initial_flip == False:
-    #         self.dx = self.SPEED * 2
-    #     else:
-    #         self.dx = -self.SPEED * 2
-    
-    if not (self.jump and self.action == 3):
-        if target.rect.centerx > self.rect.centerx:
-            self.flip = False
-        else:
-            self.flip = True
-
-    # Apply gravity and downward movement for the target if it was hit while jumping
-    if target.jump_hit:
-        target.vel_y += target.GRAVITY
-        target.dy += target.vel_y
-
-        # Reset the jump_hit flag when the target lands
-        if target.rect.bottom + target.dy > screen_height - 110:
-            target.vel_y = 0
-            target.jump = False
-            target.dy = screen_height - 110 - target.rect.bottom
-            target.jump_hit = False
-    
-    if self.crouch == True:
-      #self.vel_y = 500
-      #print(self.rect.y)
-      self.rect.y=390
-
-    #ensure players face each other
-    if target.rect.centerx > self.rect.centerx:
-      self.flip = False
-    else:
-      self.flip = True
-
-    #apply attack cooldown
-    if self.attack_cooldown > 0:
-      self.attack_cooldown -= 1
-
-    if self.action == 3 and self.frame_index == 0:
-        self.dx = 0
-
-    if self.knockback_frames > 0:
-      knockback_direction = -1 if self.flip else 1
-      self.dx = -knockback_direction * self.knockback
-      self.knockback_frames -= 1
-
-    #update player position
-    self.rect.x += self.dx
-    self.rect.y += self.dy
-
-
   #handle animation update
   def update(self):
     #check what action the player is performing
@@ -1215,4 +1189,3 @@ class FighterAIRLvAIBT():
     bodyRect = pygame.Surface((self.rect.size), pygame.SRCALPHA)
     bodyRect.fill((255, 0, 0, 100))
     surface.blit(bodyRect, self.rect.topleft)
-      
