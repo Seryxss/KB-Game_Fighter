@@ -49,6 +49,7 @@ class FighterAIRLvAIBT2():
     
     self.reaction_frame = 1000/60 #ini dari ticks nya idk translasinya ke fps :V (jadi tiap 1600ticks, blablabla)
     self.last_count_update = pygame.time.get_ticks()
+    self.last_count_updateRL = pygame.time.get_ticks()
     self.keys={"W" : False,
                "A" : False,
                "S" : False,
@@ -65,7 +66,6 @@ class FighterAIRLvAIBT2():
                "A" : False,
                "S" : False,
                "D" : False,
-               "SPACE" : False,
                "R" : False,
                "T" : False,
                "F" : False,
@@ -88,7 +88,7 @@ class FighterAIRLvAIBT2():
     return animation_list
 
 
-  def move(self, screen_width, screen_height, surface, target, round_over):
+  def move(self, screen_width, screen_height, surface, target, round_over, action):
     if self.target == None and self.surface == None:
       self.target = target
       self.surface = surface
@@ -122,18 +122,82 @@ class FighterAIRLvAIBT2():
     if self.attacking == False and self.alive == True and round_over == False and self.attack_cooldown == 0:
       distance = math.sqrt((self.rect.centerx - target.rect.centerx)**2 + (self.rect.centery - target.rect.centery)**2)
       #check player 1 controls
-      if (pygame.time.get_ticks() - self.last_count_update) >= self.reaction_frame:
-        self.last_count_update = pygame.time.get_ticks()
-        # self.keysRL["R"] = True
+      if action == 1:
+         self.keysRL["W"] = True
+
+      if action == 2:
+         self.keysRL["A"] = True
       else:
-         self.keysRL["SPACE"] = False
+        self.keysRL["A"] = False
+
+      if action == 3:
+         self.keysRL["S"] = True
+      else:
+        self.keysRL["S"] = False
+
+      if action == 4:
+         self.keysRL["D"] = True
+         
+      if action != 0:
+        if (pygame.time.get_ticks() - self.last_count_updateRL) >= self.reaction_frame:
+          self.last_count_updateRL = pygame.time.get_ticks()
+          # self.keysRL["R"] = True
+          if action == 5:
+            self.keysRL["R"] = True
+          if action == 6:
+            self.keysRL["T"] = True
+          if action == 7:
+            self.keysRL["F"] = True
+          if action == 8:
+            self.keysRL["G"] = True
+          if action == 9:
+            self.keysRL["C"] = True
+          if action == 10:
+            self.keysRL["V"] = True
+          if action == 11:
+            self.keysRL["W"] = True
+            self.keysRL["R"] = True
+          if action == 12:
+            self.keysRL["W"] = True
+            self.keysRL["T"] = True
+          if action == 13:
+            self.keysRL["W"] = True
+            self.keysRL["F"] = True
+          if action == 14:
+            self.keysRL["W"] = True
+            self.keysRL["G"] = True
+          if action == 15:
+            self.keysRL["S"] = True
+            self.keysRL["R"] = True
+          if action == 16:
+            self.keysRL["S"] = True
+            self.keysRL["T"] = True
+          if action == 17:
+            self.keysRL["S"] = True
+            self.keysRL["F"] = True
+          if action == 18:
+            self.keysRL["S"] = True
+            self.keysRL["G"] = True
+            
+        else:
+          self.keysRL["R"] = False
+          self.keysRL["T"] = False
+          self.keysRL["F"] = False
+          self.keysRL["G"] = False
+          self.keysRL["C"] = False
+          self.keysRL["V"] = False
+      
+      else:
+         self.keysRL["W"] = False
+         self.keysRL["A"] = False
+         self.keysRL["S"] = False
+         self.keysRL["D"] = False
          self.keysRL["R"] = False
          self.keysRL["T"] = False
          self.keysRL["F"] = False
          self.keysRL["G"] = False
          self.keysRL["C"] = False
          self.keysRL["V"] = False
-      self.keysRL["D"] = True
       
       if self.player == 1 and self.action != 2:
         #crouch
@@ -318,7 +382,9 @@ class FighterAIRLvAIBT2():
       
       
       ###############TEMPAT AI BEHA#######################
-      if (pygame.time.get_ticks() - self.last_count_update) >= self.next_action*self.reaction_frame:
+      # print('1: ', pygame.time.get_ticks() - self.last_count_update)
+      # print(self.next_action*self.reaction_frame)
+      if (pygame.time.get_ticks() - self.last_count_update ) >= self.next_action*self.reaction_frame:
         self.next_action = random.randint(6,10)
         choice = random.randint(1,1000)
         distance = abs(self.rect.centerx - target.rect.centerx)
@@ -327,6 +393,7 @@ class FighterAIRLvAIBT2():
         #   print(distance)
         self.keys = dict.fromkeys(self.keys,False)
         self.last_count_update = pygame.time.get_ticks()
+        # print('masuk')
         if self.jump:
           if target.jump:
             if choice in range(1, 240):
@@ -1215,3 +1282,4 @@ class FighterAIRLvAIBT2():
     bodyRect = pygame.Surface((self.rect.size), pygame.SRCALPHA)
     bodyRect.fill((255, 0, 0, 100))
     surface.blit(bodyRect, self.rect.topleft)
+    print("masukDraw")
