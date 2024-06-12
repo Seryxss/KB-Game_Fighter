@@ -1,33 +1,28 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import torch.nn.functional as F
 import numpy as np
 import random
+from collections import namedtuple, deque
 
 class DQN(nn.Module):
-    def __init__(self, observation_space, action_space):
+    def __init__(self, state_size, action_size, seed, fc1_units=64, fc2_units=32,fc3_units=16,fc4_units=8):
+        
         super(DQN, self).__init__()
+        self.seed = torch.manual_seed(seed)
+        self.fc1 = nn.Linear(state_size, fc1_units)
+        self.fc2 = nn.Linear(fc1_units, fc2_units)
+        self.fc3 = nn.Linear(fc2_units, fc3_units)
+        self.fc4 = nn.Linear(fc3_units, fc4_units)
+        self.fc5 = nn.Linear(fc4_units, action_size)
         
-        self.input_dim = observation_space.shape
-        self.output_dim = action_space.n
-        
-        self.conv1 = nn.Conv2d(self.input_dim[0], 32, kernel_size=8, stride=4)
-        self.conv2 = nn.Conv2d(32, 64, kernel_size=4, stride=2)
-        self.conv3 = nn.Conv2d(64, 64, kernel_size=3, stride=1)
-        self.fc1 = nn.Linear(self.feature_size(), 512)
-        self.fc2 = nn.Linear(512, self.output_dim)
-        
-    def forward(self, x):
-        x = nn.functional.relu(self.conv1(x))
-        x = nn.functional.relu(self.conv2(x))
-        x = nn.functional.relu(self.conv3(x))
-        x = x.view(x.size(0), -1)
-        x = nn.functional.relu(self.fc1(x))
-        x = self.fc2(x)
-        return x
-    
-    def feature_size(self):
-        return self.conv3(self.conv2(self.conv1(torch.zeros(1, *self.input_dim).to(next(self.parameters()).device)))).view(1, -1).size(1)
+    def forward(self, state):
+        x = F.relu(self.fc1(state))
+        x = F.relu(self.fc2(x))
+        x = F.relu(self.fc3(x))
+        x = F.relu(self.fc4(x))
+        return self.fc5(x)
 
 class DQNAgent:
     def __init__(self, observation_space, action_space, gamma=0.99, epsilon=1.0, epsilon_min=0.01, epsilon_decay=0.995, lr=0.001, batch_size=64, buffer_size=10000):
