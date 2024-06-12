@@ -49,6 +49,7 @@ class FighterAIRLvAIBT2():
     
     self.reaction_frame = 1000/60 #ini dari ticks nya idk translasinya ke fps :V (jadi tiap 1600ticks, blablabla)
     self.last_count_update = pygame.time.get_ticks()
+    self.last_count_updateRL = pygame.time.get_ticks()
     self.keys={"W" : False,
                "A" : False,
                "S" : False,
@@ -122,8 +123,8 @@ class FighterAIRLvAIBT2():
     if self.attacking == False and self.alive == True and round_over == False and self.attack_cooldown == 0:
       distance = math.sqrt((self.rect.centerx - target.rect.centerx)**2 + (self.rect.centery - target.rect.centery)**2)
       #check player 1 controls
-      if (pygame.time.get_ticks() - self.last_count_update) >= self.reaction_frame:
-        self.last_count_update = pygame.time.get_ticks()
+      if (pygame.time.get_ticks() - self.last_count_updateRL) >= self.reaction_frame:
+        self.last_count_updateRL = pygame.time.get_ticks()
         # self.keysRL["R"] = True
       else:
          self.keysRL["SPACE"] = False
@@ -318,7 +319,9 @@ class FighterAIRLvAIBT2():
       
       
       ###############TEMPAT AI BEHA#######################
-      if (pygame.time.get_ticks() - self.last_count_update) >= self.next_action*self.reaction_frame:
+      # print('1: ', pygame.time.get_ticks() - self.last_count_update)
+      # print(self.next_action*self.reaction_frame)
+      if (pygame.time.get_ticks() - self.last_count_update ) >= self.next_action*self.reaction_frame:
         self.next_action = random.randint(6,10)
         choice = random.randint(1,1000)
         distance = abs(self.rect.centerx - target.rect.centerx)
@@ -327,6 +330,7 @@ class FighterAIRLvAIBT2():
         #   print(distance)
         self.keys = dict.fromkeys(self.keys,False)
         self.last_count_update = pygame.time.get_ticks()
+        print('masuk')
         if self.jump:
           if target.jump:
             if choice in range(1, 240):
