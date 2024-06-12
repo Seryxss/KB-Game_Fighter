@@ -95,6 +95,7 @@ class Agent:
     def get_action(self, state):
         self.epsilon = 100 - self.n_games #100 ni kek disuru explor sek 100 game e
         final_move = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        # final_move = [0, 0, 0]
         if random.randint(0, 200) < self.epsilon:
             move = random.randint(0, 18)
             final_move[move] = 1

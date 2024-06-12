@@ -117,65 +117,65 @@ class FighterAIRLvAIBT2():
       else:
         self.rect.left = target.rect.right
         self.collision_rect.left = target.collision_rect.right
-
+    print(action)
     #can only perform other actions if not currently attacking
-    if self.attacking == False and self.alive == True and round_over == False and self.attack_cooldown == 0:
+    if self.attacking == False and self.alive == True and round_over == False and self.attack_cooldown == 0 and self.player == 1:
       distance = math.sqrt((self.rect.centerx - target.rect.centerx)**2 + (self.rect.centery - target.rect.centery)**2)
       #check player 1 controls
-      if action == 1:
+      if action[1] == 1:
          self.keysRL["W"] = True
 
-      if action == 2:
+      if action[2] == 1:
          self.keysRL["A"] = True
       else:
         self.keysRL["A"] = False
 
-      if action == 3:
+      if action[3] == 1:
          self.keysRL["S"] = True
       else:
         self.keysRL["S"] = False
 
-      if action == 4:
+      if action[4] == 1:
          self.keysRL["D"] = True
          
-      if action != 0:
+      if action[0] == 0:
         if (pygame.time.get_ticks() - self.last_count_updateRL) >= self.reaction_frame:
           self.last_count_updateRL = pygame.time.get_ticks()
           # self.keysRL["R"] = True
-          if action == 5:
+          if action[5] == 1:
             self.keysRL["R"] = True
-          if action == 6:
+          if action[6] == 1:
             self.keysRL["T"] = True
-          if action == 7:
+          if action[7] == 1:
             self.keysRL["F"] = True
-          if action == 8:
+          if action[8] == 1:
             self.keysRL["G"] = True
-          if action == 9:
+          if action[9] == 1:
             self.keysRL["C"] = True
-          if action == 10:
+          if action[10] == 1:
             self.keysRL["V"] = True
-          if action == 11:
+          if action[11] == 1:
             self.keysRL["W"] = True
             self.keysRL["R"] = True
-          if action == 12:
+          if action[12] == 1:
             self.keysRL["W"] = True
             self.keysRL["T"] = True
-          if action == 13:
+          if action[13] == 1:
             self.keysRL["W"] = True
             self.keysRL["F"] = True
-          if action == 14:
+          if action[14] == 1:
             self.keysRL["W"] = True
             self.keysRL["G"] = True
-          if action == 15:
+          if action[15] == 1:
             self.keysRL["S"] = True
             self.keysRL["R"] = True
-          if action == 16:
+          if action[16] == 1:
             self.keysRL["S"] = True
             self.keysRL["T"] = True
-          if action == 17:
+          if action[17] == 1:
             self.keysRL["S"] = True
             self.keysRL["F"] = True
-          if action == 18:
+          if action[18] == 1:
             self.keysRL["S"] = True
             self.keysRL["G"] = True
             
@@ -1282,4 +1282,4 @@ class FighterAIRLvAIBT2():
     bodyRect = pygame.Surface((self.rect.size), pygame.SRCALPHA)
     bodyRect.fill((255, 0, 0, 100))
     surface.blit(bodyRect, self.rect.topleft)
-    print("masukDraw")
+    # print("masukDraw")

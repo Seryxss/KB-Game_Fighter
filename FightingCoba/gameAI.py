@@ -165,6 +165,7 @@ class fighterGameAITraining:
             quit()
     
     self.action = action
+    print(self.action)
     
     self.fighter_1.move(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.screen, self.fighter_2, self.round_over, self.action)
     self.fighter_2.move(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.screen, self.fighter_1, self.round_over, None)
