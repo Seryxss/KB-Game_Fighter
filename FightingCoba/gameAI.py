@@ -141,6 +141,7 @@ class fighterGameAITraining:
     self.resetGame()
 
   def resetGame(self):
+    self.round_over = False
     self.action = ActionLists.IDLE
 
     self.fighter_1 = FighterAIRLvAIBT2(1, 300, 330, False, self.WARRIOR_DATA, self.warrior_sheet, self.WARRIOR_ANIMATION_STEPS, self.sword_fx, self.screen_width)
@@ -165,7 +166,7 @@ class fighterGameAITraining:
             quit()
     
     self.action = action
-    print(self.action)
+    # print(self.action)
     
     self.fighter_1.move(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.screen, self.fighter_2, self.round_over, self.action)
     self.fighter_2.move(self.SCREEN_WIDTH, self.SCREEN_HEIGHT, self.screen, self.fighter_1, self.round_over, None)

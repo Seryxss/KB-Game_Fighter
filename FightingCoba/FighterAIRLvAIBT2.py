@@ -46,6 +46,7 @@ class FighterAIRLvAIBT2():
     self.jump_move_limit = self.jump_move_limit_MAIN
     self.jump_speed_boost = False
     self.screen_height = None
+    self.intialCrouch = False
     
     self.reaction_frame = 1000/60 #ini dari ticks nya idk translasinya ke fps :V (jadi tiap 1600ticks, blablabla)
     self.last_count_update = pygame.time.get_ticks()
@@ -117,7 +118,7 @@ class FighterAIRLvAIBT2():
       else:
         self.rect.left = target.rect.right
         self.collision_rect.left = target.collision_rect.right
-    print(action)
+    # print(action)
     #can only perform other actions if not currently attacking
     if self.attacking == False and self.alive == True and round_over == False and self.attack_cooldown == 0 :
       distance = math.sqrt((self.rect.centerx - target.rect.centerx)**2 + (self.rect.centery - target.rect.centery)**2)
@@ -125,11 +126,12 @@ class FighterAIRLvAIBT2():
         #check player 1 controls
         if action[1] == 1:
           self.keysRL["W"] = True
+        else:
+          self.keysRL["W"] = False
 
         if action[2] == 1:
           self.keysRL["A"] = True
-        else:
-          self.keysRL["A"] = False
+          self.keysRL["D"] = False
 
         if action[3] == 1:
           self.keysRL["S"] = True
@@ -138,6 +140,7 @@ class FighterAIRLvAIBT2():
 
         if action[4] == 1:
           self.keysRL["D"] = True
+          self.keysRL["A"] = False
           
         if action[0] == 0:
           if (pygame.time.get_ticks() - self.last_count_updateRL) >= self.reaction_frame:
@@ -190,9 +193,9 @@ class FighterAIRLvAIBT2():
         
         else:
           self.keysRL["W"] = False
-          self.keysRL["A"] = False
+          # self.keysRL["A"] = False
           self.keysRL["S"] = False
-          self.keysRL["D"] = False
+          # self.keysRL["D"] = False
           self.keysRL["R"] = False
           self.keysRL["T"] = False
           self.keysRL["F"] = False
@@ -761,7 +764,17 @@ class FighterAIRLvAIBT2():
             self.attack_type = 8
             self.attacking = True
             self.damage = 26
-            
+    
+    self.keysRL["W"] = False
+    # self.keysRL["A"] = False
+    self.keysRL["S"] = False
+    # self.keysRL["D"] = False
+    self.keysRL["R"] = False
+    self.keysRL["T"] = False
+    self.keysRL["F"] = False
+    self.keysRL["G"] = False
+    self.keysRL["C"] = False
+    self.keysRL["V"] = False
     ###########################################################################################################################
 
     #apply gravity

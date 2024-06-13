@@ -94,11 +94,31 @@ class Agent:
 
     def get_action(self, state):
         self.epsilon = 100 - self.n_games #100 ni kek disuru explor sek 100 game e
-        final_move = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        final_move = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] ## ARRAY UNTUK MOVE
         # final_move = [0, 0, 0]
         if random.randint(0, 200) < self.epsilon:
-            move = random.randint(0, 18)
-            final_move[move] = 1
+            moveIAD = random.randint(1, 2)
+            # if moveIAD == 0:
+            #     final_move[0] = 1
+            if moveIAD == 1:
+                final_move[2] = 1 #act2 a
+            if moveIAD == 2:
+                final_move[4] = 1 #act4 d
+            
+            moveIWS = random.randint(0, 25)
+            # if moveIWS == 0:
+            #     # final_move[0] = 1 #act0 idle
+            #     pass
+            if moveIWS == 1:
+                final_move[1] = 1 #act1 w
+            if moveIWS == 2:
+                final_move[3] = 1 #act3 s
+
+            moveAggro = random.randint(5, 50) #18
+            if moveAggro > 18:
+                final_move[0] = 1 #act0 idle
+            else:
+                final_move[moveAggro] = 1
         
         else:
             state0 = torch.tensor(state, dtype=torch.float)
@@ -119,6 +139,7 @@ def train():
     
     agent.model.load() # checks and loads the previous trained model if it exists
     
+    intI = 0
     while True:
         # get old state 
         state_old = agent.get_state(game)
@@ -126,33 +147,40 @@ def train():
         # get move
         final_move = agent.get_action(state_old)
         
-        # Perform move and get new state
-        reward, done, score = game.play_step(final_move)
-        state_new = agent.get_state(game)
-        
-        # train short memory
-        agent.train_short_memory(state_old, final_move, reward, state_new, done)
-        
-        # Remember 
-        agent.remember(state_old, final_move, reward, state_new, done)
-        
-        if done:
-            # Train long memory, plot result
-            game.resetGame()
-            agent.n_games += 1
-            agent.train_long_memory()
+        print(intI)
+
+        intI += 1
+
+
+        if intI % 60 == 0:
+            intI %= 60
+            # Perform move and get new state
+            reward, done, score = game.play_step(final_move)
+            state_new = agent.get_state(game)
             
-            if score > record:
-                record = score
-                agent.model.save()
+            # train short memory
+            agent.train_short_memory(state_old, final_move, reward, state_new, done)
+            
+            # Remember 
+            agent.remember(state_old, final_move, reward, state_new, done)
+            
+            if done:
+                # Train long memory, plot result
+                game.resetGame()
+                agent.n_games += 1
+                agent.train_long_memory()
                 
-            print('Game: %s \nScore: %s \nRecord: %s' % (agent.n_games, score, record))
-            
-            plot_scores.append(score)
-            total_score += score
-            mean_score = total_score / agent.n_games
-            plot_mean_scores.append(mean_score)
-            plot(plot_scores, plot_mean_scores)
+                if score > record:
+                    record = score
+                    agent.model.save()
+                    
+                print('Game: %s \nScore: %s \nRecord: %s' % (agent.n_games, score, record))
+                
+                plot_scores.append(score)
+                total_score += score
+                mean_score = total_score / agent.n_games
+                plot_mean_scores.append(mean_score)
+                plot(plot_scores, plot_mean_scores)
             
 
 if __name__ == "__main__":
