@@ -2,17 +2,22 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
+import numpy as np
 import os
 
 class Linear_QNet(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super().__init__()
-        self.linear1 = nn.Linear(input_size, hidden_size)
-        self.linear2 = nn.Linear(hidden_size, output_size)
+        self.linear1 = nn.Linear(input_size, hidden_size*4)
+        self.linear2 = nn.Linear(hidden_size*4, hidden_size*2)
+        self.linear3 = nn.Linear(hidden_size*2, hidden_size)
+        self.linear4 = nn.Linear(hidden_size, output_size)
         
     def forward(self, x):
         x = F.relu(self.linear1(x))
-        x = self.linear2(x)
+        x = F.relu(self.linear2(x))
+        x = F.relu(self.linear3(x))
+        x = self.linear4(x)
         
         return x
     

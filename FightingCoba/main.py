@@ -6,8 +6,6 @@ from FighterPvAIRL import FighterPvAIRL
 from FighterAIRLvAIBT2 import FighterAIRLvAIBT2
 from FighterAIRLvAIBT import FighterAIRLvAIBT
 from button import Button
-from FighterEnv import FighterEnv
-from DQNAgent import DQNAgent
 
 mixer.init()
 pygame.init()

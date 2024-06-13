@@ -186,20 +186,25 @@ class fighterGameAITraining:
         game_over = True
         self.round_over = True
         self.round_over_time = pygame.time.get_ticks()
-        reward -= 1000000
+        reward -= 300
+        self.score -= 300
         return reward, game_over, self.score
       elif self.fighter_2.alive == False:
         game_over = True
         self.round_over = True
         self.round_over_time = pygame.time.get_ticks()
-        reward += 1000000
+        reward += 300
+        self.score += 300
         return reward, game_over, self.score
     
     if self.fighter_1.health < self.fighter_1_last_health:
-       self.score -= self.fighter_1_last_health - self.fighter_1.health
+       temp = self.fighter_1_last_health - self.fighter_1.health
+       reward = reward + 3 if temp < 5 else reward - temp # blocking 
+       self.score = self.score + 3 if temp < 5 else self.score - temp 
        self.fighter_1_last_health = self.fighter_1.health
 
     if self.fighter_2.health < self.fighter_2_last_health:
+       reward += self.fighter_2_last_health - self.fighter_2.health
        self.score += self.fighter_2_last_health - self.fighter_2.health
        self.fighter_2_last_health = self.fighter_2.health
 

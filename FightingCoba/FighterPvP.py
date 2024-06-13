@@ -114,6 +114,7 @@ class FighterPvP():
           self.vel_y = -30
           self.jump = True
           self.initial_flip = self.flip
+          print(pygame.time.get_ticks())
           # self.jump_speed_boost = True
         #movement
         if not self.crouch:  # Only allow movement when not crouching
@@ -498,6 +499,7 @@ class FighterPvP():
             target.jump = False
             target.dy = screen_height - 110 - target.rect.bottom
             target.jump_hit = False
+            
     
     if self.crouch == True:
       #self.vel_y = 500
