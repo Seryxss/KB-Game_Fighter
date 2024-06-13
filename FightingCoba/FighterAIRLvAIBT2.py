@@ -46,9 +46,11 @@ class FighterAIRLvAIBT2():
     self.jump_move_limit = self.jump_move_limit_MAIN
     self.jump_speed_boost = False
     self.screen_height = None
+    self.intialCrouch = False
     
     self.reaction_frame = 1000/60 #ini dari ticks nya idk translasinya ke fps :V (jadi tiap 1600ticks, blablabla)
     self.last_count_update = pygame.time.get_ticks()
+    self.last_count_updateRL = pygame.time.get_ticks()
     self.last_count_updateRL = pygame.time.get_ticks()
     self.keys={"W" : False,
                "A" : False,
@@ -66,7 +68,6 @@ class FighterAIRLvAIBT2():
                "A" : False,
                "S" : False,
                "D" : False,
-               "SPACE" : False,
                "R" : False,
                "T" : False,
                "F" : False,
@@ -89,7 +90,7 @@ class FighterAIRLvAIBT2():
     return animation_list
 
 
-  def move(self, screen_width, screen_height, surface, target, round_over):
+  def move(self, screen_width, screen_height, surface, target, round_over, action):
     if self.target == None and self.surface == None:
       self.target = target
       self.surface = surface
@@ -118,13 +119,13 @@ class FighterAIRLvAIBT2():
       else:
         self.rect.left = target.rect.right
         self.collision_rect.left = target.collision_rect.right
-
+    # print(action)
     #can only perform other actions if not currently attacking
-    if self.attacking == False and self.alive == True and round_over == False and self.attack_cooldown == 0:
+    if self.attacking == False and self.alive == True and round_over == False and self.attack_cooldown == 0 :
       distance = math.sqrt((self.rect.centerx - target.rect.centerx)**2 + (self.rect.centery - target.rect.centery)**2)
       #check player 1 controls
-      if (pygame.time.get_ticks() - self.last_count_updateRL) >= self.reaction_frame:
-        self.last_count_updateRL = pygame.time.get_ticks()
+      if (pygame.time.get_ticks() - self.last_count_update) >= self.reaction_frame:
+        self.last_count_update = pygame.time.get_ticks()
         # self.keysRL["R"] = True
       else:
          self.keysRL["SPACE"] = False
@@ -330,7 +331,6 @@ class FighterAIRLvAIBT2():
         #   print(distance)
         self.keys = dict.fromkeys(self.keys,False)
         self.last_count_update = pygame.time.get_ticks()
-        print('masuk')
         if self.jump:
           if target.jump:
             if choice in range(1, 240):
@@ -697,7 +697,17 @@ class FighterAIRLvAIBT2():
             self.attack_type = 8
             self.attacking = True
             self.damage = 26
-            
+    
+    self.keysRL["W"] = False
+    # self.keysRL["A"] = False
+    self.keysRL["S"] = False
+    # self.keysRL["D"] = False
+    self.keysRL["R"] = False
+    self.keysRL["T"] = False
+    self.keysRL["F"] = False
+    self.keysRL["G"] = False
+    self.keysRL["C"] = False
+    self.keysRL["V"] = False
     ###########################################################################################################################
 
     #apply gravity
@@ -1219,3 +1229,4 @@ class FighterAIRLvAIBT2():
     bodyRect = pygame.Surface((self.rect.size), pygame.SRCALPHA)
     bodyRect.fill((255, 0, 0, 100))
     surface.blit(bodyRect, self.rect.topleft)
+    # print("masukDraw")
