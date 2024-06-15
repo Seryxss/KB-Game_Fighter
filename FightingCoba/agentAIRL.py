@@ -143,6 +143,7 @@ def train():
     
     # agent.model.load() # checks and loads the previous trained model if it exists
     final_move = []
+    episode = 0
     
     while True:
         if game.fighter_1.attacking == False and game.fighter_1.hit == False:
@@ -172,13 +173,15 @@ def train():
         
         if done:
             # Train long memory, plot result
+            episode = episode + 1
             game.resetGame()
             agent.n_games += 1
             agent.train_long_memory()
             
-            if score > record:
+            # if score > record:
+            if episode % 20 == 0:
                 record = score
-                agent.model.save("Score_{0}".format(int(score)))
+                agent.model.save("Ep_{0}_Score_{1}".format(episode, int(score)))
                 
             print('Game: %s \nScore: %s \nRecord: %s' % (agent.n_games, score, record))
             
