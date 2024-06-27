@@ -35,6 +35,7 @@ class Linear_QNet(nn.Module):
         
         if not os.path.exists(model_folder_path):
             print('The model must be in the \'model\' folder')
+            # ep 40 score 479
             
         elif not os.path.isfile(file_name):
             print("There isn't a previous model available, starting a new training....")

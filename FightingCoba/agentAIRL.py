@@ -141,7 +141,8 @@ def train():
     agent = Agent()
     game = fighterGameAITraining()
     
-    # agent.model.load() # checks and loads the previous trained model if it exists
+    # agent.model.load('Ep_40_Score_479') # checks and loads the previous trained model if it exists
+    agent.model.load()
     final_move = []
     episode = 0
     
@@ -179,7 +180,7 @@ def train():
             agent.train_long_memory()
             
             # if score > record:
-            if episode % 20 == 0:
+            if episode % 3 == 0:
                 record = score
                 agent.model.save("Ep_{0}_Score_{1}".format(episode, int(score)))
                 
