@@ -141,8 +141,10 @@ def train():
     agent = Agent()
     game = fighterGameAITraining()
     
-    # agent.model.load('Ep_40_Score_479') # checks and loads the previous trained model if it exists
-    agent.model.load()
+    agent.model.load('Ep_9_Score_620')
+    # agent.model.load('modelKETINGGIEN IKI/Ep_30_Score_691')
+    #agent.model.load('modelAwal/Ep_40_Score_462') # checks and loads the previous trained model if it exists
+    # agent.model.load()
     final_move = []
     episode = 0
     
