@@ -4,7 +4,6 @@ from FighterPvP import FighterPvP
 from FighterPvAI import FighterPvAI
 from FighterPvAIRL import FighterPvAIRL
 from FighterAIRLvAIBT2 import FighterAIRLvAIBT2
-from FighterAIRLvAIBT import FighterAIRLvAIBT
 from button import Button
 from agentAIRL import Agent
 from agentAIRL import *
@@ -111,139 +110,93 @@ def play(mode): #mode = 1 for PvP, mode = 2 for PvAI, mode = 3 for AIvAI
     fighter_1 = FighterPvAIRL(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
     fighter_2 = FighterPvAIRL(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
   if mode == 4:
-    # agent = Agent()
     seeRLvBT()
-    # fighter_1 = FighterAIRLvAIBT(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width, SCREEN_HEIGHT, screen)
-    # fighter_2 = FighterAIRLvAIBT(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width, SCREEN_HEIGHT, screen)
-    # env = FighterEnv(fighter_1, fighter_2)
-    # print(env.observation_space.shape)
-    # print(env.action_space.shape)
-    # # Initialize the DQN agent
-    # agent = DQNAgent(env.observation_space, env.action_space)
-
+    # fighter_1 = FighterAIRLvAIBT2(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+    # fighter_2 = FighterAIRLvAIBT2(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
 
   global plays
   global score
-  if mode == 0:
-    print(mode)
-      # Training loop for the DQN agent
-      # num_episodes = 10000
-      # for episode in range(num_episodes):
-      #     # state = env.reset()
-      #     state = [fighter_1.rect.topleft, fighter_2.rect.topleft]
-      #     print(state)
-      #     print(state.shape)
-      #     done = False
-      #     episode_reward = 0
+  while plays and mode != 4:
+    clock.tick(FPS)
+    #draw background
+    draw_bg()
 
-      #     while not done:
-      #         # Render the game (optional)
-      #         env.render()
+    #show player stats
+    draw_health_bar(fighter_1.health, 20, 20)
+    draw_health_bar(fighter_2.health, 580, 20)
+    draw_text("P1: " + str(score[0]), score_font, RED, 20, 60)
+    draw_text("P2: " + str(score[1]), score_font, RED, 580, 60)
 
-      #         # Select an action for the DQN agent
-      #         action = agent.select_action(state)
+    #update countdown
+    if intro_count <= 0:  
+      #move fighters
+      fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2, round_over)
+      fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_1, round_over)
+    else:
+      #display count timer
+      draw_text(str(intro_count), count_font, RED, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)
+      #update count timer
+      if (pygame.time.get_ticks() - last_count_update) >= 1000:
+        intro_count -= 1
+        last_count_update = pygame.time.get_ticks()
 
-      #         # Take the action and observe the next state and reward
-      #         next_state, reward, done, _ = env.step(action)
+    #update fighters
+    fighter_1.update()
+    fighter_2.update()
 
-      #         # Store the transition in the replay buffer
-      #         agent.store_transition(state, action, reward, next_state, done)
+    #draw fighters
+    fighter_1.draw(screen)
+    fighter_2.draw(screen)
 
-      #         # Update the agent
-      #         agent.update()
+    #check for player defeat
+    if round_over == False:
+      if fighter_1.alive == False:
+        score[1] += 1
+        round_over = True
+        round_over_time = pygame.time.get_ticks()
+        # plays = False
+      elif fighter_2.alive == False:
+        score[0] += 1
+        round_over = True
+        round_over_time = pygame.time.get_ticks()
+        # plays = False
+    else:
+      #display victory image
+      screen.blit(victory_img, (360, 150))
+      if pygame.time.get_ticks() - round_over_time > ROUND_OVER_COOLDOWN:
+        round_over = False
+        intro_count = 3
+      if mode == 1:
+        fighter_1 = FighterPvP(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+        fighter_2 = FighterPvP(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
+      if mode == 2:
+        fighter_1 = FighterPvAI(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+        fighter_2 = FighterPvAI(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
+      if mode == 3:
+        fighter_1 = FighterPvAIRL(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+        fighter_2 = FighterPvAIRL(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
+      if mode == 4:
+        seeRLvBT()
+        # fighter_1 = FighterAIRLvAIBT2(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+        # fighter_2 = FighterAIRLvAIBT2(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
 
-      #         state = next_state
-      #         episode_reward += reward
-
-      #     # Update the target network periodically
-      #     if episode % 100 == 0:
-      #         agent.update_target_network()
-
-      #     print(f"Episode {episode}, Reward: {episode_reward}")
-
-      # # Close the environment
-      # env.close()
-  else:
-    while plays:
-      clock.tick(FPS)
-      #draw background
-      draw_bg()
-
-      #show player stats
-      draw_health_bar(fighter_1.health, 20, 20)
-      draw_health_bar(fighter_2.health, 580, 20)
-      draw_text("P1: " + str(score[0]), score_font, RED, 20, 60)
-      draw_text("P2: " + str(score[1]), score_font, RED, 580, 60)
-
-      #update countdown
-      if intro_count <= 0:  
-        #move fighters
-        fighter_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_2, round_over)
-        fighter_2.move(SCREEN_WIDTH, SCREEN_HEIGHT, screen, fighter_1, round_over)
-      else:
-        #display count timer
-        draw_text(str(intro_count), count_font, RED, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 3)
-        #update count timer
-        if (pygame.time.get_ticks() - last_count_update) >= 1000:
-          intro_count -= 1
-          last_count_update = pygame.time.get_ticks()
-
-      #update fighters
-      fighter_1.update()
-      fighter_2.update()
-
-      #draw fighters
-      fighter_1.draw(screen)
-      fighter_2.draw(screen)
-
-      #check for player defeat
-      if round_over == False:
-        if fighter_1.alive == False:
-          score[1] += 1
-          round_over = True
-          round_over_time = pygame.time.get_ticks()
-        elif fighter_2.alive == False:
-          score[0] += 1
-          round_over = True
-          round_over_time = pygame.time.get_ticks()
-      else:
-        #display victory image
-        screen.blit(victory_img, (360, 150))
-        if pygame.time.get_ticks() - round_over_time > ROUND_OVER_COOLDOWN:
-          round_over = False
-          intro_count = 3
-        if mode == 1:
-          fighter_1 = FighterPvP(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
-          fighter_2 = FighterPvP(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
-        if mode == 2:
-          fighter_1 = FighterPvAI(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
-          fighter_2 = FighterPvAI(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
-        if mode == 3:
-          fighter_1 = FighterPvAIRL(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
-          fighter_2 = FighterPvAIRL(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
-        if mode == 4:
-          # agent = Agent()
-          seeRLvBT()
-          # fighter_1 = FighterAIRLvAIBT2(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
-          # fighter_2 = FighterAIRLvAIBT2(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
-
-      # print(score)
-      if score[0] == 2 or score[1] == 2:
-        plays = True
-        runs = True
-        score = [0,0]
-        main_menu()
-    
-      #event handler
-      for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-          plays = False
-          runs = False
-          sys.exit()
+    # print(score)
+    if score[0] == 2 or score[1] == 2:
+      plays = True
+      runs = True
+      score = [0,0]
+      main_menu()
+  
+    #event handler
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        plays = False
+        runs = False
+        sys.exit()
 
 
-      #update display
-      pygame.display.update()
+    #update display
+    pygame.display.update()
 
 def get_font(size): # Returns Press-Start-2P in the desired size
     return pygame.font.Font("assets/font.ttf", size)

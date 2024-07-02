@@ -92,7 +92,7 @@ class fighterGameAITraining:
     #define game variables
     self.last_count_update = pygame.time.get_ticks()
     self.round_over = False
-    self.ROUND_OVER_COOLDOWN = 2000
+    self.ROUND_OVER_COOLDOWN = 4000
 
     #define fighter variablesksssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
     self.WARRIOR_SIZE = 250
@@ -115,6 +115,8 @@ class fighterGameAITraining:
 
     #load aaaaaaaaaround image
     self.bg_image = pygame.image.load("assets/images/background/background.jpg").convert_alpha()
+
+    self.victory_img = pygame.image.load("assets/images/icons/victory.png").convert_alpha()
 
     #load spritesheets
     # warrior_sheet = pygame.image.load("assets/images/warrior/Sprites/ryu.png").convert_alpha()
@@ -195,7 +197,11 @@ class fighterGameAITraining:
         self.round_over_time = pygame.time.get_ticks()
         reward += 300
         self.score += 300
-        return reward, game_over, self.score
+    else:
+      self.screen.blit(self.victory_img, (360, 150))
+      if pygame.time.get_ticks() - self.round_over_time > self.ROUND_OVER_COOLDOWN:
+        self.round_over = False
+        # self.intro_count = 3
     
     if self.fighter_1.health < self.fighter_1_last_health:
        temp = self.fighter_1_last_health - self.fighter_1.health

@@ -240,8 +240,11 @@ def seeRLvBT():
         # Remember 
         # agent.remember(state_old, final_move, reward, state_new, done)
         
-        if done:
-            print("done")
+        if done: 
+            print("done", pygame.time.get_ticks() - game.round_over_time)
+            print(game.ROUND_OVER_COOLDOWN)
+        if done and (pygame.time.get_ticks() - game.round_over_time >= 5):
+            print("done2", pygame.time.get_ticks() - game.round_over_time)
         # if game.fighter_1.health <= 0 or game.fighter_1.health <= 0:
             RUNS = False
         
