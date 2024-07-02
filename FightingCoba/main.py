@@ -107,8 +107,9 @@ def play(mode): #mode = 1 for PvP, mode = 2 for PvAI, mode = 3 for AIvAI
     fighter_1 = FighterPvAI(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
     fighter_2 = FighterPvAI(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
   if mode == 3:
-    fighter_1 = FighterPvAIRL(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
-    fighter_2 = FighterPvAIRL(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
+    seeRLvP()
+    # fighter_1 = FighterPvAIRL(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+    # fighter_2 = FighterPvAIRL(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
   if mode == 4:
     seeRLvBT()
     # fighter_1 = FighterAIRLvAIBT2(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
@@ -116,7 +117,7 @@ def play(mode): #mode = 1 for PvP, mode = 2 for PvAI, mode = 3 for AIvAI
 
   global plays
   global score
-  while plays and mode != 4:
+  while plays and mode != 4 and mode != 3:
     clock.tick(FPS)
     #draw background
     draw_bg()
@@ -173,8 +174,9 @@ def play(mode): #mode = 1 for PvP, mode = 2 for PvAI, mode = 3 for AIvAI
         fighter_1 = FighterPvAI(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
         fighter_2 = FighterPvAI(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
       if mode == 3:
-        fighter_1 = FighterPvAIRL(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
-        fighter_2 = FighterPvAIRL(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
+         seeRLvP()
+        # fighter_1 = FighterPvAIRL(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+        # fighter_2 = FighterPvAIRL(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
       if mode == 4:
         seeRLvBT()
         # fighter_1 = FighterAIRLvAIBT2(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)

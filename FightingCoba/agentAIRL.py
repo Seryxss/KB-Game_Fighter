@@ -5,6 +5,7 @@ import numpy as np
 from collections import deque
 
 from gameAI import fighterGameAITraining, ActionLists, Position
+from gameAIvP import fighterGameAIvP, ActionLists, Position
 from model import Linear_QNet, QTrainer
 from helper import plot
 
@@ -194,13 +195,13 @@ def train():
             plot_mean_scores.append(mean_score)
             plot(plot_scores, plot_mean_scores)
             
-def seeRLvBT():
+def seeRLvP():
     plot_scores = []
     plot_mean_scores = []
     total_score = 0
     record = 0
     agent = Agent()
-    game = fighterGameAITraining()
+    game = fighterGameAIvP()
     
     # agent.model.load('Ep_9_Score_620')
     # agent.model.load('modelKETINGGIEN IKI/Ep_30_Score_691')
@@ -210,6 +211,7 @@ def seeRLvBT():
     episode = 0
 
     RUNS = True
+    doneTime = 0
     
     while RUNS:
         if game.fighter_1.attacking == False and game.fighter_1.hit == False:
@@ -240,10 +242,67 @@ def seeRLvBT():
         # Remember 
         # agent.remember(state_old, final_move, reward, state_new, done)
         
-        if done: 
+        if done and doneTime == 0: 
+            doneTime = pygame.time.get_ticks()
             print("done", pygame.time.get_ticks() - game.round_over_time)
             print(game.ROUND_OVER_COOLDOWN)
-        if done and (pygame.time.get_ticks() - game.round_over_time >= 5):
+        if done and (pygame.time.get_ticks() - doneTime >= 1000):
+            print("done2", pygame.time.get_ticks() - game.round_over_time)
+        # if game.fighter_1.health <= 0 or game.fighter_1.health <= 0:
+            RUNS = False
+
+def seeRLvBT():
+    plot_scores = []
+    plot_mean_scores = []
+    total_score = 0
+    record = 0
+    agent = Agent()
+    game = fighterGameAITraining()
+    
+    # agent.model.load('Ep_9_Score_620')
+    # agent.model.load('modelKETINGGIEN IKI/Ep_30_Score_691')
+    agent.model.load('modelAwal/Ep_80_Score_479') # checks and loads the previous trained model if it exists
+    # agent.model.load()
+    final_move = []
+    episode = 0
+
+    RUNS = True
+    doneTime = 0
+    
+    while RUNS:
+        if game.fighter_1.attacking == False and game.fighter_1.hit == False:
+            if agent.cooldown <= 0 :
+            
+                # get old state 
+                state_old = agent.get_state(game)
+                
+                # get move
+                new_final_move = agent.get_action(state_old)
+                final_move = new_final_move
+                
+                # print(agent.cooldown, pygame.time.get_ticks() ,final_move)
+                
+        
+        agent.cooldown -= 1
+        # Perform move and get new state
+        # print(agent.cooldown)
+        reward, done, score = game.play_step(final_move)
+        state_new = agent.get_state(game)
+
+        # game.play_step(final_move)
+        # agent.get_state(game)
+        
+        # train short memory
+        # agent.train_short_memory(state_old, final_move, reward, state_new, done)
+        
+        # Remember 
+        # agent.remember(state_old, final_move, reward, state_new, done)
+        
+        if done and doneTime == 0: 
+            doneTime = pygame.time.get_ticks()
+            print("done", pygame.time.get_ticks() - game.round_over_time)
+            print(game.ROUND_OVER_COOLDOWN)
+        if done and (pygame.time.get_ticks() - doneTime >= 1000):
             print("done2", pygame.time.get_ticks() - game.round_over_time)
         # if game.fighter_1.health <= 0 or game.fighter_1.health <= 0:
             RUNS = False
