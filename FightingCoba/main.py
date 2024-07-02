@@ -6,6 +6,8 @@ from FighterPvAIRL import FighterPvAIRL
 from FighterAIRLvAIBT2 import FighterAIRLvAIBT2
 from FighterAIRLvAIBT import FighterAIRLvAIBT
 from button import Button
+from agentAIRL import Agent
+from agentAIRL import *
 
 mixer.init()
 pygame.init()
@@ -109,55 +111,58 @@ def play(mode): #mode = 1 for PvP, mode = 2 for PvAI, mode = 3 for AIvAI
     fighter_1 = FighterPvAIRL(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
     fighter_2 = FighterPvAIRL(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
   if mode == 4:
-    fighter_1 = FighterAIRLvAIBT(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width, SCREEN_HEIGHT, screen)
-    fighter_2 = FighterAIRLvAIBT(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width, SCREEN_HEIGHT, screen)
-    env = FighterEnv(fighter_1, fighter_2)
-    print(env.observation_space.shape)
-    print(env.action_space.shape)
-    # Initialize the DQN agent
-    agent = DQNAgent(env.observation_space, env.action_space)
+    # agent = Agent()
+    seeRLvBT()
+    # fighter_1 = FighterAIRLvAIBT(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width, SCREEN_HEIGHT, screen)
+    # fighter_2 = FighterAIRLvAIBT(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width, SCREEN_HEIGHT, screen)
+    # env = FighterEnv(fighter_1, fighter_2)
+    # print(env.observation_space.shape)
+    # print(env.action_space.shape)
+    # # Initialize the DQN agent
+    # agent = DQNAgent(env.observation_space, env.action_space)
 
 
   global plays
   global score
-  if mode == 4:
+  if mode == 0:
+    print(mode)
       # Training loop for the DQN agent
-      num_episodes = 10000
-      for episode in range(num_episodes):
-          # state = env.reset()
-          state = [fighter_1.rect.topleft, fighter_2.rect.topleft]
-          print(state)
-          print(state.shape)
-          done = False
-          episode_reward = 0
+      # num_episodes = 10000
+      # for episode in range(num_episodes):
+      #     # state = env.reset()
+      #     state = [fighter_1.rect.topleft, fighter_2.rect.topleft]
+      #     print(state)
+      #     print(state.shape)
+      #     done = False
+      #     episode_reward = 0
 
-          while not done:
-              # Render the game (optional)
-              env.render()
+      #     while not done:
+      #         # Render the game (optional)
+      #         env.render()
 
-              # Select an action for the DQN agent
-              action = agent.select_action(state)
+      #         # Select an action for the DQN agent
+      #         action = agent.select_action(state)
 
-              # Take the action and observe the next state and reward
-              next_state, reward, done, _ = env.step(action)
+      #         # Take the action and observe the next state and reward
+      #         next_state, reward, done, _ = env.step(action)
 
-              # Store the transition in the replay buffer
-              agent.store_transition(state, action, reward, next_state, done)
+      #         # Store the transition in the replay buffer
+      #         agent.store_transition(state, action, reward, next_state, done)
 
-              # Update the agent
-              agent.update()
+      #         # Update the agent
+      #         agent.update()
 
-              state = next_state
-              episode_reward += reward
+      #         state = next_state
+      #         episode_reward += reward
 
-          # Update the target network periodically
-          if episode % 100 == 0:
-              agent.update_target_network()
+      #     # Update the target network periodically
+      #     if episode % 100 == 0:
+      #         agent.update_target_network()
 
-          print(f"Episode {episode}, Reward: {episode_reward}")
+      #     print(f"Episode {episode}, Reward: {episode_reward}")
 
-      # Close the environment
-      env.close()
+      # # Close the environment
+      # env.close()
   else:
     while plays:
       clock.tick(FPS)
@@ -217,8 +222,10 @@ def play(mode): #mode = 1 for PvP, mode = 2 for PvAI, mode = 3 for AIvAI
           fighter_1 = FighterPvAIRL(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
           fighter_2 = FighterPvAIRL(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
         if mode == 4:
-          fighter_1 = FighterAIRLvAIBT2(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
-          fighter_2 = FighterAIRLvAIBT2(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
+          # agent = Agent()
+          seeRLvBT()
+          # fighter_1 = FighterAIRLvAIBT2(1, 300, 330, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, screen_width)
+          # fighter_2 = FighterAIRLvAIBT2(2, 650, 330, True, WARRIOR2_DATA, warrior2_sheet, WARRIOR2_ANIMATION_STEPS, magic_fx, screen_width)
 
       # print(score)
       if score[0] == 2 or score[1] == 2:

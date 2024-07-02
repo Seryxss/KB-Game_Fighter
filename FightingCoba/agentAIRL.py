@@ -194,6 +194,76 @@ def train():
             plot_mean_scores.append(mean_score)
             plot(plot_scores, plot_mean_scores)
             
+def seeRLvBT():
+    plot_scores = []
+    plot_mean_scores = []
+    total_score = 0
+    record = 0
+    agent = Agent()
+    game = fighterGameAITraining()
+    
+    # agent.model.load('Ep_9_Score_620')
+    # agent.model.load('modelKETINGGIEN IKI/Ep_30_Score_691')
+    agent.model.load('modelAwal/Ep_80_Score_479') # checks and loads the previous trained model if it exists
+    # agent.model.load()
+    final_move = []
+    episode = 0
+
+    RUNS = True
+    
+    while RUNS:
+        if game.fighter_1.attacking == False and game.fighter_1.hit == False:
+            if agent.cooldown <= 0 :
+            
+                # get old state 
+                state_old = agent.get_state(game)
+                
+                # get move
+                new_final_move = agent.get_action(state_old)
+                final_move = new_final_move
+                
+                # print(agent.cooldown, pygame.time.get_ticks() ,final_move)
+                
+        
+        agent.cooldown -= 1
+        # Perform move and get new state
+        # print(agent.cooldown)
+        reward, done, score = game.play_step(final_move)
+        state_new = agent.get_state(game)
+
+        # game.play_step(final_move)
+        # agent.get_state(game)
+        
+        # train short memory
+        # agent.train_short_memory(state_old, final_move, reward, state_new, done)
+        
+        # Remember 
+        # agent.remember(state_old, final_move, reward, state_new, done)
+        
+        if done:
+            print("done")
+        # if game.fighter_1.health <= 0 or game.fighter_1.health <= 0:
+            RUNS = False
+        
+        # if done:
+        #     # Train long memory, plot result
+        #     episode = episode + 1
+        #     game.resetGame()
+        #     agent.n_games += 1
+        #     agent.train_long_memory()
+            
+        #     # if score > record:
+        #     if episode % 3 == 0:
+        #         record = score
+        #         agent.model.save("Ep_{0}_Score_{1}".format(episode, int(score)))
+                
+        #     print('Game: %s \nScore: %s \nRecord: %s' % (agent.n_games, score, record))
+            
+        #     plot_scores.append(score)
+        #     total_score += score
+        #     mean_score = total_score / agent.n_games
+        #     plot_mean_scores.append(mean_score)
+        #     plot(plot_scores, plot_mean_scores)
 
 if __name__ == "__main__":
     train()
